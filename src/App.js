@@ -23,7 +23,9 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Chart balance={balance} width={width} height={height} />
+        <header>
+          <Chart balance={balance} width={width} height={height} />
+        </header>
         <button onClick={this.random}>Random</button>
       </div>
     );
@@ -37,7 +39,7 @@ function Chart({ balance, width, height }) {
 
   var y = scaleLinear()
     .domain([0, Math.max(...balance.map(d => d[1]))])
-    .rangeRound([height * 0.9, height * 0.1]);
+    .rangeRound([height, height * 0.1]);
 
   var createArea = area()
     .curve(curveNatural)
@@ -53,11 +55,11 @@ function Chart({ balance, width, height }) {
   return (
     <svg width={width} height={height}>
       <MotionPath path={createArea(balance)}>
-        {d => <path d={d} fill="rgba(137, 192, 189, 0.8)" />}
+        {d => <path d={d} fill="#FD76B3" />}
 			</MotionPath>
 
       <MotionPath path={createLine(balance)}>
-        {d => <path d={d} fill="none" stroke="rgba(62, 111, 108, 1)" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />}
+        {d => <path d={d} fill="none" stroke="#5A5D9C" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />}
       </MotionPath>
     </svg>
   )
