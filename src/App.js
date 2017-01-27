@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { TransitionMotion, spring } from 'react-motion';
 import './App.css';
 import { scaleTime, scaleLinear } from 'd3-scale';
-import { area, line, curveNatural } from 'd3-shape';
+import { area, line, curveMonotoneX } from 'd3-shape';
 import { extent } from 'd3-array';
 import { format } from 'd3-format';
 import MotionPath from './MotionPath';
@@ -19,43 +19,45 @@ class App extends Component {
 
     return (
       <div className="App">
-        <header>
-          <Importer>
-            {balance => <Chart balance={balance} width={width} height={height} />}
-          </Importer>
-        </header>
+        <Importer>
+          {transactions =>
+            <header>
+              <Chart transactions={transactions} width={width} height={height} />
+            </header>
+          }
+        </Importer>
       </div>
     );
   }
 }
 
-function Chart({ balance, width, height }) {
+function Chart({ transactions, width, height }) {
   var x = scaleTime()
-    .domain(extent(balance, d => d[0]))
+    .domain(extent(transactions, d => d.date))
     .rangeRound([0, width]);
 
   var y = scaleLinear()
-    .domain([0, Math.max(...balance.map(d => d[1]))])
+    .domain([0, Math.max(...transactions.map(d => d.balance))])
     .rangeRound([height, height * 0.1]);
 
   var createArea = area()
-    .curve(curveNatural)
-    .x(d => x(d[0]))
+    .curve(curveMonotoneX)
+    .x(d => x(d.date))
     .y0(y(0))
-    .y1(d => y(d[1]))
+    .y1(d => y(d.balance))
 
   var createLine = line()
-    .curve(curveNatural)
-    .x(d => x(d[0]))
-    .y(d => y(d[1]))
+    .curve(curveMonotoneX)
+    .x(d => x(d.date))
+    .y(d => y(d.balance))
 
   return (
     <svg width={width} height={height}>
-      <MotionPath path={createArea(balance)}>
+      <MotionPath path={createArea(transactions)}>
         {d => <path d={d} fill="#9FE9E4" />}
 			</MotionPath>
 
-      <MotionPath path={createLine(balance)}>
+      <MotionPath path={createLine(transactions)}>
         {d => <path d={d} fill="none" stroke="#71D1CA" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />}
       </MotionPath>
 
@@ -101,6 +103,5 @@ function willLeave({style}) {
 function willEnter({style}) {
 	return {x: style.x.val, opacity: 0};
 }
-
 
 export default App;
