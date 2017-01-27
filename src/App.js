@@ -55,11 +55,11 @@ function Chart({ balance, width, height }) {
   return (
     <svg width={width} height={height}>
       <MotionPath path={createArea(balance)}>
-        {d => <path d={d} fill="#FD76B3" />}
+        {d => <path d={d} fill="#9FE9E4" />}
 			</MotionPath>
 
       <MotionPath path={createLine(balance)}>
-        {d => <path d={d} fill="none" stroke="#5A5D9C" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />}
+        {d => <path d={d} fill="none" stroke="#71D1CA" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />}
       </MotionPath>
     </svg>
   )
