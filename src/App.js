@@ -14,6 +14,10 @@ class App extends Component {
     height: 400
   }
 
+  componentDidMount() {
+    window.onresize = () => this.setState({ width: window.innerWidth })
+  }
+
   render() {
     var { width, height } = this.state;
 
