@@ -6,30 +6,24 @@ import { area, line, curveNatural } from 'd3-shape';
 import { extent } from 'd3-array';
 import { format } from 'd3-format';
 import MotionPath from './MotionPath';
+import Importer from './Importer';
 
 class App extends Component {
   state = {
-    balance: generateData(),
     width: window.innerWidth,
     height: 400
   }
 
-  random = () => this.setState({ balance: generateData() })
-
-  componentDidMount() {
-    setInterval(() => this.random(), 2000);
-  }
-
   render() {
-    var { balance, width, height } = this.state;
+    var { width, height } = this.state;
 
     return (
       <div className="App">
         <header>
-          <Chart balance={balance} width={width} height={height} />
+          <Importer>
+            {balance => <Chart balance={balance} width={width} height={height} />}
+          </Importer>
         </header>
-
-        <button onClick={this.random}>Random</button>
       </div>
     );
   }
@@ -108,19 +102,5 @@ function willEnter({style}) {
 	return {x: style.x.val, opacity: 0};
 }
 
-function generateData() {
-  return [
-    [new Date('2016-01-01'), randomNum(30000, 100000)],
-    [new Date('2016-02-01'), randomNum(30000, 100000)],
-    [new Date('2016-03-01'), randomNum(30000, 100000)],
-    [new Date('2016-04-01'), randomNum(30000, 100000)],
-    [new Date('2016-05-01'), randomNum(30000, 100000)],
-    [new Date('2016-06-01'), randomNum(30000, 100000)]
-  ];
-}
-
-function randomNum(from, to) {
-  return Math.random() * (to - from) + from;
-}
 
 export default App;
