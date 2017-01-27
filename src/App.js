@@ -26,7 +26,7 @@ class App extends Component {
         <Importer>
           {transactions =>
             <header>
-              <Chart transactions={transactions} width={width} height={height} />
+              <AccountBalanceChart transactions={transactions} width={width} height={height} />
             </header>
           }
         </Importer>
@@ -35,7 +35,7 @@ class App extends Component {
   }
 }
 
-function Chart({ transactions, width, height }) {
+function AccountBalanceChart({ transactions, width, height }) {
   var x = scaleTime()
     .domain(extent(transactions, d => d.date))
     .rangeRound([0, width]);
