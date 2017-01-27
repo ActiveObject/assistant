@@ -26,6 +26,7 @@ class App extends Component {
         <header>
           <Chart balance={balance} width={width} height={height} />
         </header>
+
         <button onClick={this.random}>Random</button>
       </div>
     );
