@@ -29,3 +29,10 @@ body,
   flex-direction: column;
   background-color: white;
 }
+
+.axis text {
+  fill: #333;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 0.5em;
+}
