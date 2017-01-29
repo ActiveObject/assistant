@@ -23,7 +23,7 @@ body,
 
 .App header {
   width: 100vw;
-  height: 80vh;
+  /*height: 80vh;*/
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
