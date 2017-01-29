@@ -11,22 +11,39 @@ import Importer from './Importer';
 class App extends Component {
   state = {
     width: window.innerWidth,
-    height: 400
+    height: 400,
+    range: [0, 0]
   }
 
   componentDidMount() {
     window.onresize = () => this.setState({ width: window.innerWidth })
   }
 
+  setRangeStart = (event) => {
+    var { value } = event.target;
+    this.setState(state => ({
+      range: [value, state.range[1]]
+    }));
+  }
+
+  setRangeEnd = (event) => {
+    var { value } = event.target;
+    this.setState(state => ({
+      range: [state.range[0], value]
+    }));
+  }
+
   render() {
-    var { width, height } = this.state;
+    var { width, height, range } = this.state;
 
     return (
       <div className="App">
         <Importer>
           {transactions =>
             <header>
-              <AccountBalanceChart transactions={transactions} width={width} height={height} />
+              <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />
+              <input type="range" min={0} max={transactions.length - 1} step="1" value={range[0]} onChange={this.setRangeStart} />
+              <input type="range" min={0} max={transactions.length - 1} step="1" value={range[1]} onChange={this.setRangeEnd} />
             </header>
           }
         </Importer>
@@ -35,9 +52,9 @@ class App extends Component {
   }
 }
 
-function AccountBalanceChart({ transactions, width, height }) {
+function AccountBalanceChart({ transactions, width, height, range }) {
   var x = scaleTime()
-    .domain(extent(transactions, d => d.date))
+    .domain([transactions[range[0]].date, transactions[range[1]].date])
     .rangeRound([0, width]);
 
   var y = scaleLinear()
