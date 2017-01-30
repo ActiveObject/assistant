@@ -12,12 +12,37 @@ import Importer from './Importer';
 class App extends Component {
   state = {
     width: window.innerWidth,
-    height: 400,
-    range: [0, 0]
+    height: 400
   }
 
   componentDidMount() {
     window.onresize = () => this.setState({ width: window.innerWidth })
+  }
+
+  render() {
+    var { width, height } = this.state;
+
+    return (
+      <div className="App">
+        <Importer>
+          {transactions =>
+            <header>
+              <Summary transactions={transactions} />
+              <TransactionRange transactions={transactions}>
+                {range => <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />}
+              </TransactionRange>
+              <MonthExpenditureChart transactions={transactions} width={width / 3} height={height / 3} />
+            </header>
+          }
+        </Importer>
+      </div>
+    );
+  }
+}
+
+class TransactionRange extends Component {
+  state = {
+    range: [0, this.props.transactions.length - 1]
   }
 
   setRangeStart = (event) => {
@@ -35,23 +60,16 @@ class App extends Component {
   }
 
   render() {
-    var { width, height, range } = this.state;
+    var { range } = this.state;
+    var { transactions } = this.props;
 
     return (
-      <div className="App">
-        <Importer>
-          {transactions =>
-            <header>
-              <Summary transactions={transactions} />
-              <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />
-              <input type="range" min={0} max={transactions.length - 1} step="1" value={range[0]} onChange={this.setRangeStart} />
-              <input type="range" min={0} max={transactions.length - 1} step="1" value={range[1]} onChange={this.setRangeEnd} />
-              <MonthExpenditureChart transactions={transactions} width={width / 3} height={height / 3} />
-            </header>
-          }
-        </Importer>
+      <div>
+        {this.props.children(range)}
+        <input type="range" min={0} max={transactions.length - 1} step="1" value={range[0]} onChange={this.setRangeStart} />
+        <input type="range" min={0} max={transactions.length - 1} step="1" value={range[1]} onChange={this.setRangeEnd} />
       </div>
-    );
+    )
   }
 }
 
