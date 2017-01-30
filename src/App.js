@@ -11,12 +11,13 @@ import Importer from './Importer';
 
 class App extends Component {
   state = {
-    width: window.innerWidth,
+    // width: window.innerWidth,
+    width: 800,
     height: 400
   }
 
   componentDidMount() {
-    window.onresize = () => this.setState({ width: window.innerWidth })
+    // window.onresize = () => this.setState({ width: window.innerWidth })
   }
 
   render() {
@@ -26,13 +27,13 @@ class App extends Component {
       <div className="App">
         <Importer>
           {transactions =>
-            <header>
+            <div className="feed">
               <Summary transactions={transactions} />
               <TransactionRange transactions={transactions}>
                 {range => <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />}
               </TransactionRange>
-              <MonthExpenditureChart transactions={transactions} width={width / 3} height={height / 3} />
-            </header>
+              <MonthExpenditureChart transactions={transactions} width={width} height={height} />
+            </div>
           }
         </Importer>
       </div>
