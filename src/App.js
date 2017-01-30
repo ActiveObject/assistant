@@ -42,6 +42,7 @@ class App extends Component {
         <Importer>
           {transactions =>
             <header>
+              <Summary transactions={transactions} />
               <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />
               <input type="range" min={0} max={transactions.length - 1} step="1" value={range[0]} onChange={this.setRangeStart} />
               <input type="range" min={0} max={transactions.length - 1} step="1" value={range[1]} onChange={this.setRangeEnd} />
@@ -52,6 +53,30 @@ class App extends Component {
       </div>
     );
   }
+}
+
+function Summary({ transactions }) {
+  var balance = transactions[0].balance;
+  var income = transactions.map(t => t.amount).filter(x => x > 0).reduce((a, b) => a + b);
+  var expenditure = transactions.map(t => t.amount).filter(x => x < 0).reduce((a, b) => a + b);
+
+  var places = new Map();
+
+  transactions.forEach(transaction => {
+    if (!places.has(transaction.description)) {
+      places.set(transaction.description, 0)
+    }
+
+    places.set(transaction.description, places.get(transaction.description) + 1);
+  });
+
+  return (
+    <div>
+      <div>{`Balance: ${balance}`}</div>
+      <div>{`Income: ${income}`}</div>
+      <div>{`Expenditure: ${expenditure}`}</div>
+    </div>
+  )
 }
 
 function MonthExpenditureChart({ transactions, width, height }) {
