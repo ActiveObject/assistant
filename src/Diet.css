@@ -1,0 +1,48 @@
+table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: separate;
+  margin: 50px 0;
+}
+
+tr {
+  height: 40px;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+  font-size: .75rem;
+  background-color: #F2F2F2;
+  color: #657b83;
+}
+
+tr.divider {
+  height: 20px;
+}
+
+td {
+  padding: 0 5px;
+  text-align: right;
+}
+
+td:first-child {
+  text-align: left;
+}
+
+th {
+  text-align: right;
+}
+
+th:first-child {
+  text-align: center;
+}
+
+tr:nth-child(odd) {
+  background-color: white;
+}
+
+th {
+  text-transform: uppercase;
+  font-weight: 300;
+  background-color: white;
+  font-size: .6rem;
+}
