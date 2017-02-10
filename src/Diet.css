@@ -1,3 +1,10 @@
+.diet {
+  width: 100%;
+  max-width: 800px;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
 table {
   width: 100%;
   border-spacing: 0;
@@ -6,17 +13,13 @@ table {
 }
 
 tr {
-  height: 40px;
+  height: 30px;
   width: 100%;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: .75rem;
-  background-color: #F2F2F2;
+  background-color: white;
   color: #657b83;
-}
-
-tr.divider {
-  height: 20px;
 }
 
 td {
@@ -37,7 +40,7 @@ th:first-child {
 }
 
 tr:nth-child(odd) {
-  background-color: white;
+  background-color: #F2F2F2;
 }
 
 th {
@@ -45,4 +48,13 @@ th {
   font-weight: 300;
   background-color: white;
   font-size: .6rem;
+}
+
+tr.summary {
+  color: #6c71c4;
+  background-color: white;
+}
+
+tr.summary td {
+  border-top: 1px solid #6c71c4;
 }
