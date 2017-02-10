@@ -27,11 +27,22 @@ export default class Diet extends Component {
 
   render() {
     var { dayDiet } = this.state;
+    var weight = 79;
     var bmr = BMR({
-      weight: 79,
+      weight,
       height: 181,
       age: 25
     });
+
+    var totalProtein = dayDiet
+      .map(food => amount(food) * protein(food))
+      .reduce((a, b) => a + b);
+
+    var totalCarbo = dayDiet
+      .map(food => amount(food) * carbohydrates(food))
+      .reduce((a, b) => a + b);
+
+    var proteinCarboRation = totalProtein / totalCarbo;
 
     return (
       <div className="diet">
@@ -53,6 +64,9 @@ export default class Diet extends Component {
         </table>
 
         <div>BMR: {bmr}</div>
+        <div>{`protein: ${toFixed(totalProtein)}, ${toFixed(totalProtein / weight)}`}</div>
+        <div>{`carbohydrates: ${toFixed(totalCarbo)}, ${toFixed(totalCarbo / weight)}`}</div>
+        <div>protein/carbohydrates ration: {toFixed(proteinCarboRation)}</div>
         <TDEETable bmr={bmr} />
       </div>
     );
