@@ -100,7 +100,7 @@ function DailyNutritionPlan({ food, disabled, onToggleIngredient }) {
       <header>
         <svg width="400" height="400" viewBox="0 0 400 400" style={{ display: 'block', margin: 'auto' }}>
           <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
-          <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3" fontFamily="Roboto, sans-serif" fontWeight="100">{toFixed(totalCalories)}</text>
+          <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3" fontFamily="Roboto, sans-serif" fontWeight="100">{toFixed(totalCalories, 0)}</text>
         </svg>
 
         <div className="nutrients">
@@ -187,8 +187,8 @@ function ProductRow({ value, disabled, onClick }) {
   )
 }
 
-function toFixed(number) {
-  return Math.round(number * 10) / 10;
+function toFixed(number, digits = 1) {
+  return Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits);
 }
 
 function amount(food) {
