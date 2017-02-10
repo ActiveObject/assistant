@@ -39,43 +39,78 @@ export default class Diet extends Component {
       .reduce((a, b) => a + b);
 
     var totalCarbo = dayDiet
-      .map(food => amount(food) * carbohydrates(food))
+      .map(food => amount(food) * carbs(food))
       .reduce((a, b) => a + b);
 
     var proteinCarboRation = totalProtein / totalCarbo;
 
     return (
       <div className="diet">
-        <table>
-          <thead>
-            <tr>
-              <th>продукт</th>
-              <th className="td-right">кількість</th>
-              <th className="td-right">білки, г</th>
-              <th className="td-right">жири, г</th>
-              <th className="td-right">вуглеводи, г</th>
-              <th className="td-right">ккал</th>
-            </tr>
-          </thead>
-          <tbody>
-            {dayDiet.map((d, i) => <ProductRow value={d} key={i} />)}
-            <SummaryRow value={dayDiet} />
-          </tbody>
-        </table>
+        <DailyNutritionPlan food={dayDiet} />
 
         <div>BMR: {bmr}</div>
         <div>{`protein: ${toFixed(totalProtein)}, ${toFixed(totalProtein / weight)}`}</div>
-        <div>{`carbohydrates: ${toFixed(totalCarbo)}, ${toFixed(totalCarbo / weight)}`}</div>
-        <div>protein/carbohydrates ration: {toFixed(proteinCarboRation)}</div>
+        <div>{`carbs: ${toFixed(totalCarbo)}, ${toFixed(totalCarbo / weight)}`}</div>
+        <div>protein/carbs ration: {toFixed(proteinCarboRation)}</div>
         <TDEETable bmr={bmr} />
       </div>
     );
   }
 }
 
+function DailyNutritionPlan({ food }) {
+  var totalCalories = food
+    .map(ingredient => amount(ingredient) * kcal(ingredient))
+    .reduce((a, b) => a + b)
+
+  var totalProtein = food
+    .map(ingredient => amount(ingredient) * protein(ingredient))
+    .reduce((a, b) => a + b);
+
+  var totalFat = food
+    .map(ingredient => amount(ingredient) * fat(ingredient))
+    .reduce((a, b) => a + b);
+
+  var totalCarbs = food
+    .map(ingredient => amount(ingredient) * carbs(ingredient))
+    .reduce((a, b) => a + b);
+
+  return (
+    <div className="daily-plan">
+      <header>
+        <svg width="600" height="400" viewBox="0 0 600 400">
+          <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="5" strokeLinecap="round" />
+          <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3" fontFamily="Roboto, sans-serif" fontWeight="100">{toFixed(totalCalories)}</text>
+        </svg>
+
+        <div className="nutrients">
+          <span>{toFixed(totalProtein)}</span>
+          <span>{toFixed(totalFat)}</span>
+          <span>{toFixed(totalCarbs)}</span>
+        </div>
+      </header>
+      <table>
+        <thead>
+          <tr>
+            <th>продукт</th>
+            <th className="td-right">кількість</th>
+            <th className="td-right">білки, г</th>
+            <th className="td-right">жири, г</th>
+            <th className="td-right">вуглеводи, г</th>
+            <th className="td-right">ккал</th>
+          </tr>
+        </thead>
+        <tbody>
+          {food.map((d, i) => <ProductRow value={d} key={i} />)}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
 function TDEETable({ bmr }) {
   return (
-    <table>
+    <table style={{ backgroundColor: "white" }}>
       <thead>
         <tr>
           <th>Amount of exercise</th>
@@ -126,7 +161,7 @@ function ProductRow({ value }) {
       <td className="td-right">{value[1]}</td>
       <td className="td-right">{toFixed(amount(value) * protein(value))}</td>
       <td className="td-right">{toFixed(amount(value) * fat(value))}</td>
-      <td className="td-right">{toFixed(amount(value) * carbohydrates(value))}</td>
+      <td className="td-right">{toFixed(amount(value) * carbs(value))}</td>
       <td className="td-right">{toFixed(amount(value) * kcal(value))}</td>
     </tr>
   )
@@ -142,7 +177,7 @@ function SummaryRow({ value }) {
     .reduce((a, b) => a + b);
 
   var c = value
-    .map(food => amount(food) * carbohydrates(food))
+    .map(food => amount(food) * carbs(food))
     .reduce((a, b) => a + b);
 
   var k = value
@@ -177,7 +212,7 @@ function fat(food) {
   return food[3] / 100;
 }
 
-function carbohydrates(food) {
+function carbs(food) {
   return food[4] / 100;
 }
 
