@@ -99,8 +99,11 @@ function DailyNutritionPlan({ food, disabled, onToggleIngredient }) {
     <div className="daily-plan">
       <header>
         <svg width="400" height="400" viewBox="0 0 400 400" style={{ display: 'block', margin: 'auto' }}>
-          <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
-          <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3" fontFamily="Roboto, sans-serif" fontWeight="100">{toFixed(totalCalories, 0)}</text>
+          <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
+            <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
+            <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
+            <text x="50%" y="225" alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
+          </g>
         </svg>
 
         <div className="nutrients">
@@ -176,8 +179,8 @@ function BMR({ weight, height, age }) {
 
 function ProductRow({ value, disabled, onClick }) {
   return (
-    <tr onClick={() => onClick(value)} className={disabled && 'disabled'}>
-      <td>{value[0]}</td>
+    <tr className={disabled && 'disabled'}>
+      <td onClick={() => onClick(value)}>{value[0]}</td>
       <td className="td-right">{value[1]}</td>
       <td className="td-right">{toFixed(amount(value) * protein(value))}</td>
       <td className="td-right">{toFixed(amount(value) * fat(value))}</td>
