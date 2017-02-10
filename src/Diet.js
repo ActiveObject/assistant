@@ -98,7 +98,7 @@ function DailyNutritionPlan({ food, disabled, onToggleIngredient }) {
   return (
     <div className="daily-plan">
       <header>
-        <svg width="600" height="400" viewBox="0 0 600 400">
+        <svg width="400" height="400" viewBox="0 0 400 400" style={{ display: 'block', margin: 'auto' }}>
           <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="5" strokeLinecap="round" />
           <text x="50%" y="50%" textAnchor="middle" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3" fontFamily="Roboto, sans-serif" fontWeight="100">{toFixed(totalCalories)}</text>
         </svg>
