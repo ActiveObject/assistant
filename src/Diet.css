@@ -16,11 +16,19 @@ tr {
   font-size: .75rem;
   background-color: white;
   color: #657b83;
+  cursor: pointer;
+}
+
+tr.disabled {
+  color: #DDD;
 }
 
 td {
-  padding: 0 5px;
   text-align: left;
+}
+
+td, th {
+  padding: 0 10px;
 }
 
 .td-right {

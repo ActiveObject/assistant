@@ -22,17 +22,35 @@ export default class Diet extends Component {
       ['йогурт грецький', 150, 4.8, 10, 3.5, 123],
       ['горіхи грецькі', 20, 21.2, 56.6, 10.6, 636.6],
       ['варення чорна смородина', 20, 0, 0, 55, 220],
-    ]
+    ],
+
+    disabled: []
+  }
+
+  toggleIngredient = ingredient => {
+    this.setState(state => {
+      if (state.disabled.includes(ingredient[0])) {
+        return {
+          disabled: state.disabled.filter(name => name != ingredient[0])
+        };
+      } else {
+        return {
+          disabled: state.disabled.concat(ingredient[0])
+        };
+      }
+    });
   }
 
   render() {
-    var { dayDiet } = this.state;
+    var { dayDiet, disabled } = this.state;
     var weight = 79;
     var bmr = BMR({
       weight,
       height: 181,
       age: 25
     });
+
+    console.log(disabled);
 
     var totalProtein = dayDiet
       .map(food => amount(food) * protein(food))
@@ -46,7 +64,7 @@ export default class Diet extends Component {
 
     return (
       <div className="diet">
-        <DailyNutritionPlan food={dayDiet} />
+        <DailyNutritionPlan food={dayDiet} disabled={disabled} onToggleIngredient={this.toggleIngredient} />
 
         <div>BMR: {bmr}</div>
         <div>{`protein: ${toFixed(totalProtein)}, ${toFixed(totalProtein / weight)}`}</div>
@@ -58,20 +76,24 @@ export default class Diet extends Component {
   }
 }
 
-function DailyNutritionPlan({ food }) {
+function DailyNutritionPlan({ food, disabled, onToggleIngredient }) {
   var totalCalories = food
+    .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * kcal(ingredient))
     .reduce((a, b) => a + b)
 
   var totalProtein = food
+    .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * protein(ingredient))
     .reduce((a, b) => a + b);
 
   var totalFat = food
+    .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * fat(ingredient))
     .reduce((a, b) => a + b);
 
   var totalCarbs = food
+    .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * carbs(ingredient))
     .reduce((a, b) => a + b);
 
@@ -101,7 +123,7 @@ function DailyNutritionPlan({ food }) {
           </tr>
         </thead>
         <tbody>
-          {food.map((d, i) => <ProductRow value={d} key={i} />)}
+          {food.map((d, i) => <ProductRow value={d} key={i} onClick={onToggleIngredient} disabled={disabled.includes(d[0])} />)}
         </tbody>
       </table>
     </div>
@@ -154,9 +176,9 @@ function BMR({ weight, height, age }) {
   return 10 * weight + 6.25 * height - 5 * age + 5;
 }
 
-function ProductRow({ value }) {
+function ProductRow({ value, disabled, onClick }) {
   return (
-    <tr>
+    <tr onClick={() => onClick(value)} className={disabled && 'disabled'}>
       <td>{value[0]}</td>
       <td className="td-right">{value[1]}</td>
       <td className="td-right">{toFixed(amount(value) * protein(value))}</td>
