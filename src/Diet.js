@@ -189,35 +189,6 @@ function ProductRow({ value, disabled, onClick }) {
   )
 }
 
-function SummaryRow({ value }) {
-  var p = value
-    .map(food => amount(food) * protein(food))
-    .reduce((a, b) => a + b);
-
-  var f = value
-    .map(food => amount(food) * fat(food))
-    .reduce((a, b) => a + b);
-
-  var c = value
-    .map(food => amount(food) * carbs(food))
-    .reduce((a, b) => a + b);
-
-  var k = value
-    .map(food => amount(food) * kcal(food))
-    .reduce((a, b) => a + b);
-
-  return (
-    <tr className="summary">
-      <td></td>
-      <td></td>
-      <td className="td-right">{toFixed(p)}</td>
-      <td className="td-right">{toFixed(f)}</td>
-      <td className="td-right">{toFixed(c)}</td>
-      <td className="td-right">{toFixed(k)}</td>
-    </tr>
-  )
-}
-
 function toFixed(number) {
   return Math.round(number * 10) / 10;
 }
