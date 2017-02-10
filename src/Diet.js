@@ -50,15 +50,13 @@ export default class Diet extends Component {
       age: 25
     });
 
-    console.log(disabled);
-
     var totalProtein = dayDiet
       .map(food => amount(food) * protein(food))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
 
     var totalCarbo = dayDiet
       .map(food => amount(food) * carbs(food))
-      .reduce((a, b) => a + b);
+      .reduce((a, b) => a + b, 0);
 
     var proteinCarboRation = totalProtein / totalCarbo;
 
@@ -80,22 +78,22 @@ function DailyNutritionPlan({ food, disabled, onToggleIngredient }) {
   var totalCalories = food
     .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * kcal(ingredient))
-    .reduce((a, b) => a + b)
+    .reduce((a, b) => a + b, 0)
 
   var totalProtein = food
     .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * protein(ingredient))
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   var totalFat = food
     .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * fat(ingredient))
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   var totalCarbs = food
     .filter(ingredient => !disabled.includes(ingredient[0]))
     .map(ingredient => amount(ingredient) * carbs(ingredient))
-    .reduce((a, b) => a + b);
+    .reduce((a, b) => a + b, 0);
 
   return (
     <div className="daily-plan">
