@@ -24,18 +24,18 @@ tr {
 
 td {
   padding: 0 5px;
-  text-align: right;
-}
-
-td:first-child {
   text-align: left;
 }
 
-th {
+.td-right {
   text-align: right;
 }
 
-th:first-child {
+.td-left {
+  text-align: right;
+}
+
+.td-center {
   text-align: center;
 }
 
@@ -48,6 +48,7 @@ th {
   font-weight: 300;
   background-color: white;
   font-size: .6rem;
+  text-align: center;
 }
 
 tr.summary {

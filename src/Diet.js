@@ -27,6 +27,11 @@ export default class Diet extends Component {
 
   render() {
     var { dayDiet } = this.state;
+    var bmr = BMR({
+      weight: 79,
+      height: 181,
+      age: 25
+    });
 
     return (
       <div className="diet">
@@ -34,11 +39,11 @@ export default class Diet extends Component {
           <thead>
             <tr>
               <th>продукт</th>
-              <th>кількість</th>
-              <th>білки, г</th>
-              <th>жири, г</th>
-              <th>вуглеводи, г</th>
-              <th>ккал</th>
+              <th className="td-right">кількість</th>
+              <th className="td-right">білки, г</th>
+              <th className="td-right">жири, г</th>
+              <th className="td-right">вуглеводи, г</th>
+              <th className="td-right">ккал</th>
             </tr>
           </thead>
           <tbody>
@@ -46,20 +51,69 @@ export default class Diet extends Component {
             <SummaryRow value={dayDiet} />
           </tbody>
         </table>
+
+        <div>BMR: {bmr}</div>
+        <TDEETable bmr={bmr} />
       </div>
     );
   }
+}
+
+function TDEETable({ bmr }) {
+  return (
+    <table>
+      <thead>
+        <tr>
+          <th>Amount of exercise</th>
+          <th>Description</th>
+          <th className="td-right">TDEE, kcal</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <td>Sedentary</td>
+          <td>Little or no Exercise</td>
+          <td className="td-right">{toFixed(bmr * 1.2)}</td>
+        </tr>
+        <tr>
+          <td>Lightly active</td>
+          <td>Light exercise/sports 1-3 days/week</td>
+          <td className="td-right">{toFixed(bmr * 1.375)}</td>
+        </tr>
+        <tr>
+          <td>Moderately active</td>
+          <td>Moderate exercise/sports 3-5 days/week</td>
+          <td className="td-right">{toFixed(bmr * 1.55)}</td>
+        </tr>
+        <tr>
+          <td>Very active</td>
+          <td>Heavy exercise/sports 6-7 days/week</td>
+          <td className="td-right">{toFixed(bmr * 1.725)}</td>
+        </tr>
+        <tr>
+          <td>Extremely active</td>
+          <td>Very heavy exercise/physical job/training twice a day</td>
+          <td className="td-right">{toFixed(bmr * 1.9)}</td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+function BMR({ weight, height, age }) {
+  return 10 * weight + 6.25 * height - 5 * age + 5;
 }
 
 function ProductRow({ value }) {
   return (
     <tr>
       <td>{value[0]}</td>
-      <td>{value[1]}</td>
-      <td>{toFixed(amount(value) * protein(value))}</td>
-      <td>{toFixed(amount(value) * fat(value))}</td>
-      <td>{toFixed(amount(value) * carbohydrates(value))}</td>
-      <td>{toFixed(amount(value) * kcal(value))}</td>
+      <td className="td-right">{value[1]}</td>
+      <td className="td-right">{toFixed(amount(value) * protein(value))}</td>
+      <td className="td-right">{toFixed(amount(value) * fat(value))}</td>
+      <td className="td-right">{toFixed(amount(value) * carbohydrates(value))}</td>
+      <td className="td-right">{toFixed(amount(value) * kcal(value))}</td>
     </tr>
   )
 }
@@ -85,10 +139,10 @@ function SummaryRow({ value }) {
     <tr className="summary">
       <td></td>
       <td></td>
-      <td>{toFixed(p)}</td>
-      <td>{toFixed(f)}</td>
-      <td>{toFixed(c)}</td>
-      <td>{toFixed(k)}</td>
+      <td className="td-right">{toFixed(p)}</td>
+      <td className="td-right">{toFixed(f)}</td>
+      <td className="td-right">{toFixed(c)}</td>
+      <td className="td-right">{toFixed(k)}</td>
     </tr>
   )
 }
