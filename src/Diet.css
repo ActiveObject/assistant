@@ -114,4 +114,6 @@ tr.summary td {
 
 .daily-plan .nutrients span {
   margin: 0 1em;
+  width: 50px;
+  text-align: center;
 }
