@@ -10,6 +10,45 @@ import MotionPath from './MotionPath';
 import Importer from './Importer';
 import DailyNutritionPlan from './DailyNutritionPlan';
 
+var foods = [
+  ['вівсянка', 60, 0, 0, 65.7, 355],
+  ['фініки', 35, 0, 0, 63.8, 285],
+  ['молоко пряжене', 250, 3, 4.7, 2.5, 53],
+  ['грейпфрутовий сік', 250, 0, 0, 8, 39],
+
+  ['яйця (3 цілих)', 200, 12, 10, 0, 140],
+  ['гречка (Бест Альтернатива)', 80, 0, 0, 63, 335],
+
+
+  ['лосось', 200, 20.5, 15.5, 0, 218],
+  ['рис (Wild&Brown Rice)', 80, 0, 0, 74.2, 367],
+
+  ['шоколад (Noir 72%)', 20, 7.86, 39.72, 35.47, 555],
+
+  ['йогурт грецький', 150, 4.8, 10, 3.5, 123],
+  ['горіхи грецькі', 20, 21.2, 56.6, 10.6, 636.6],
+  ['варення чорна смородина', 20, 0, 0, 55, 220],
+];
+
+var foodsSaturday = [
+  ['вівсянка', 60, 13.1, 6.2, 65.7, 355],
+  ['фініки', 35, 1.61, 0.54, 63.8, 285],
+  ['молоко пряжене', 250, 3, 4.7, 2.5, 53],
+  ['грейпфрутовий сік', 250, 0, 0, 8, 39],
+
+  ['яйця (3 цілих)', 200, 12, 10, 0.8, 140],
+  ['гречка (Бест Альтернатива)', 80, 12.6, 3.3, 63, 335],
+
+  ['індичка', 200, 19, 0, 0, 80],
+  ['рис (Wild&Brown Rice)', 80, 13.7, 1, 74.2, 367],
+
+  ['шоколад (Libeert Luxury 85%)', 40, 10.1, 48.4, 16.2, 555],
+
+  ['йогурт грецький', 150, 4.8, 10, 3.5, 123],
+  ['горіхи грецькі', 20, 21.2, 56.6, 10.6, 636.6],
+  ['варення чорна смородина', 20, 0, 0, 55, 220],
+];
+
 class App extends Component {
   state = {
     // width: window.innerWidth,
@@ -26,18 +65,8 @@ class App extends Component {
 
     return (
       <div className="App">
-        <DailyNutritionPlan />
-        <Importer>
-          {transactions =>
-            <div className="feed">
-              <Summary transactions={transactions} />
-              <TransactionRange transactions={transactions}>
-                {range => <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />}
-              </TransactionRange>
-              <MonthExpenditureChart transactions={transactions} width={width} height={height} />
-            </div>
-          }
-        </Importer>
+        <DailyNutritionPlan foods={foods} />
+        <DailyNutritionPlan foods={foodsSaturday} />
       </div>
     );
   }

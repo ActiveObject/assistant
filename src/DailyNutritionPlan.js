@@ -3,27 +3,6 @@ import './DailyNutritionPlan.css';
 
 export default class DailyNutritionPlan extends Component {
   state = {
-    foods: [
-      ['вівсянка', 60, 13.1, 6.2, 65.7, 355],
-      ['фініки', 35, 1.61, 0.54, 63.8, 285],
-      ['молоко пряжене', 250, 3, 4.7, 2.5, 53],
-      ['грейпфрутовий сік', 250, 0, 0, 8, 39],
-
-      ['яйця (3 цілих)', 200, 12, 10, 0.8, 140],
-      ['гречка (Бест Альтернатива)', 80, 12.6, 3.3, 63, 335],
-
-      // ['індичка', 200, 19, 0, 0, 80],
-
-      ['лосось', 200, 20.5, 15.5, 0, 218],
-      ['рис (Wild&Brown Rice)', 80, 13.7, 1, 74.2, 367],
-
-      ['шоколад (Noir 72%)', 20, 7.86, 39.72, 35.47, 555],
-
-      ['йогурт грецький', 150, 4.8, 10, 3.5, 123],
-      ['горіхи грецькі', 20, 21.2, 56.6, 10.6, 636.6],
-      ['варення чорна смородина', 20, 0, 0, 55, 220],
-    ],
-
     disabled: []
   }
 
@@ -42,7 +21,8 @@ export default class DailyNutritionPlan extends Component {
   }
 
   render() {
-    var { foods, disabled } = this.state;
+    var { foods } = this.props;
+    var { disabled } = this.state;
 
     var totalCalories = foods
       .filter(ingredient => !disabled.includes(ingredient[0]))
@@ -67,7 +47,7 @@ export default class DailyNutritionPlan extends Component {
     return (
       <div className="daily-plan">
         <header>
-          <svg width="400" height="400" viewBox="0 0 400 400" style={{ display: 'block', margin: 'auto' }}>
+          <svg width="350" height="350" viewBox="0 0 350 350" style={{ display: 'block', margin: 'auto' }}>
             <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
               <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
               <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
