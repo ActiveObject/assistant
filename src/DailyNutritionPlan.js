@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './DailyNutritionPlan.css';
+import Card from './Card';
 
 export default class DailyNutritionPlan extends Component {
   state = {
@@ -45,38 +46,40 @@ export default class DailyNutritionPlan extends Component {
       .reduce((a, b) => a + b, 0);
 
     return (
-      <div className="daily-plan">
-        <header>
-          <svg width="350" height="350" viewBox="0 0 350 350" style={{ display: 'block', margin: 'auto' }}>
-            <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-              <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
-              <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
-              <text x="50%" y="225" alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
-            </g>
-          </svg>
+      <Card>
+        <div className='DailyNutritionPlan'>
+          <header>
+            <svg width="350" height="350" viewBox="0 0 350 350" style={{ display: 'block', margin: 'auto' }}>
+              <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
+                <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
+                <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
+                <text x="50%" y="225" alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
+              </g>
+            </svg>
 
-          <div className="nutrients">
-            <span>{toFixed(totalProtein)}</span>
-            <span>{toFixed(totalFat)}</span>
-            <span>{toFixed(totalCarbs)}</span>
-          </div>
-        </header>
-        <table>
-          <thead>
-            <tr>
-              <th>продукт</th>
-              <th className="td-right">кількість</th>
-              <th className="td-right">білки, г</th>
-              <th className="td-right">жири, г</th>
-              <th className="td-right">вуглеводи, г</th>
-              <th className="td-right">ккал</th>
-            </tr>
-          </thead>
-          <tbody>
-            {foods.map((d, i) => <ProductRow value={d} key={i} onClick={this.toggleIngredient} disabled={disabled.includes(d[0])} />)}
-          </tbody>
-        </table>
-      </div>
+            <div className="nutrients">
+              <span>{toFixed(totalProtein)}</span>
+              <span>{toFixed(totalFat)}</span>
+              <span>{toFixed(totalCarbs)}</span>
+            </div>
+          </header>
+          <table>
+            <thead>
+              <tr>
+                <th>продукт</th>
+                <th className="td-right">кількість</th>
+                <th className="td-right">білки, г</th>
+                <th className="td-right">жири, г</th>
+                <th className="td-right">вуглеводи, г</th>
+                <th className="td-right">ккал</th>
+              </tr>
+            </thead>
+            <tbody>
+              {foods.map((d, i) => <ProductRow value={d} key={i} onClick={this.toggleIngredient} disabled={disabled.includes(d[0])} />)}
+            </tbody>
+          </table>
+        </div>
+      </Card>
     )
   }
 }

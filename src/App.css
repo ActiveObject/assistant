@@ -15,6 +15,13 @@ body,
   flex-direction: column;
 }
 
+@media screen and (max-width: 768px) {
+  .App {
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+}
+
 .App .feed {
   width: 800px;
 }
