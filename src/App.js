@@ -8,7 +8,7 @@ import { format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 import MotionPath from './MotionPath';
 import Importer from './Importer';
-import Diet from './Diet';
+import DailyNutritionPlan from './DailyNutritionPlan';
 
 class App extends Component {
   state = {
@@ -26,7 +26,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Diet />
+        <DailyNutritionPlan />
         <Importer>
           {transactions =>
             <div className="feed">

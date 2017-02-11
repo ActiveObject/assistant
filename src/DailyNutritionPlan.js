@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import './Diet.css';
+import './DailyNutritionPlan.css';
 
-export default class Diet extends Component {
+export default class DailyNutritionPlan extends Component {
   state = {
-    dayDiet: [
+    foods: [
       ['вівсянка', 60, 13.1, 6.2, 65.7, 355],
       ['фініки', 35, 1.61, 0.54, 63.8, 285],
       ['молоко пряжене', 250, 3, 4.7, 2.5, 53],
@@ -42,93 +42,63 @@ export default class Diet extends Component {
   }
 
   render() {
-    var { dayDiet, disabled } = this.state;
-    var weight = 79;
-    var bmr = BMR({
-      weight,
-      height: 181,
-      age: 25
-    });
+    var { foods, disabled } = this.state;
 
-    var totalProtein = dayDiet
-      .map(food => amount(food) * protein(food))
+    var totalCalories = foods
+      .filter(ingredient => !disabled.includes(ingredient[0]))
+      .map(ingredient => amount(ingredient) * kcal(ingredient))
+      .reduce((a, b) => a + b, 0)
+
+    var totalProtein = foods
+      .filter(ingredient => !disabled.includes(ingredient[0]))
+      .map(ingredient => amount(ingredient) * protein(ingredient))
       .reduce((a, b) => a + b, 0);
 
-    var totalCarbo = dayDiet
-      .map(food => amount(food) * carbs(food))
+    var totalFat = foods
+      .filter(ingredient => !disabled.includes(ingredient[0]))
+      .map(ingredient => amount(ingredient) * fat(ingredient))
       .reduce((a, b) => a + b, 0);
 
-    var proteinCarboRation = totalProtein / totalCarbo;
+    var totalCarbs = foods
+      .filter(ingredient => !disabled.includes(ingredient[0]))
+      .map(ingredient => amount(ingredient) * carbs(ingredient))
+      .reduce((a, b) => a + b, 0);
 
     return (
-      <div className="diet">
-        <DailyNutritionPlan food={dayDiet} disabled={disabled} onToggleIngredient={this.toggleIngredient} />
+      <div className="daily-plan">
+        <header>
+          <svg width="400" height="400" viewBox="0 0 400 400" style={{ display: 'block', margin: 'auto' }}>
+            <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
+              <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
+              <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
+              <text x="50%" y="225" alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
+            </g>
+          </svg>
 
-        <div>BMR: {bmr}</div>
-        <div>{`protein: ${toFixed(totalProtein)}, ${toFixed(totalProtein / weight)}`}</div>
-        <div>{`carbs: ${toFixed(totalCarbo)}, ${toFixed(totalCarbo / weight)}`}</div>
-        <div>protein/carbs ration: {toFixed(proteinCarboRation)}</div>
-        <TDEETable bmr={bmr} />
+          <div className="nutrients">
+            <span>{toFixed(totalProtein)}</span>
+            <span>{toFixed(totalFat)}</span>
+            <span>{toFixed(totalCarbs)}</span>
+          </div>
+        </header>
+        <table>
+          <thead>
+            <tr>
+              <th>продукт</th>
+              <th className="td-right">кількість</th>
+              <th className="td-right">білки, г</th>
+              <th className="td-right">жири, г</th>
+              <th className="td-right">вуглеводи, г</th>
+              <th className="td-right">ккал</th>
+            </tr>
+          </thead>
+          <tbody>
+            {foods.map((d, i) => <ProductRow value={d} key={i} onClick={this.toggleIngredient} disabled={disabled.includes(d[0])} />)}
+          </tbody>
+        </table>
       </div>
-    );
+    )
   }
-}
-
-function DailyNutritionPlan({ food, disabled, onToggleIngredient }) {
-  var totalCalories = food
-    .filter(ingredient => !disabled.includes(ingredient[0]))
-    .map(ingredient => amount(ingredient) * kcal(ingredient))
-    .reduce((a, b) => a + b, 0)
-
-  var totalProtein = food
-    .filter(ingredient => !disabled.includes(ingredient[0]))
-    .map(ingredient => amount(ingredient) * protein(ingredient))
-    .reduce((a, b) => a + b, 0);
-
-  var totalFat = food
-    .filter(ingredient => !disabled.includes(ingredient[0]))
-    .map(ingredient => amount(ingredient) * fat(ingredient))
-    .reduce((a, b) => a + b, 0);
-
-  var totalCarbs = food
-    .filter(ingredient => !disabled.includes(ingredient[0]))
-    .map(ingredient => amount(ingredient) * carbs(ingredient))
-    .reduce((a, b) => a + b, 0);
-
-  return (
-    <div className="daily-plan">
-      <header>
-        <svg width="400" height="400" viewBox="0 0 400 400" style={{ display: 'block', margin: 'auto' }}>
-          <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-            <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
-            <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
-            <text x="50%" y="225" alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
-          </g>
-        </svg>
-
-        <div className="nutrients">
-          <span>{toFixed(totalProtein)}</span>
-          <span>{toFixed(totalFat)}</span>
-          <span>{toFixed(totalCarbs)}</span>
-        </div>
-      </header>
-      <table>
-        <thead>
-          <tr>
-            <th>продукт</th>
-            <th className="td-right">кількість</th>
-            <th className="td-right">білки, г</th>
-            <th className="td-right">жири, г</th>
-            <th className="td-right">вуглеводи, г</th>
-            <th className="td-right">ккал</th>
-          </tr>
-        </thead>
-        <tbody>
-          {food.map((d, i) => <ProductRow value={d} key={i} onClick={onToggleIngredient} disabled={disabled.includes(d[0])} />)}
-        </tbody>
-      </table>
-    </div>
-  )
 }
 
 function TDEETable({ bmr }) {
