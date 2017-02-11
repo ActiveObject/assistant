@@ -10,9 +10,10 @@ body,
 .App {
   width: 100%;
   display: flex;
-  align-items: center;
+  /*align-items: center;*/
   justify-content: center;
-  flex-direction: column;
+  flex-wrap: wrap;
+  /*flex-direction: column;*/
 }
 
 @media screen and (max-width: 768px) {

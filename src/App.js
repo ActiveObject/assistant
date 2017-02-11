@@ -9,6 +9,7 @@ import { timeFormat } from 'd3-time-format';
 import MotionPath from './MotionPath';
 import Importer from './Importer';
 import DailyNutritionPlan from './DailyNutritionPlan';
+import Card from './Card';
 
 var foods = [
   ['вівсянка', 60, 0, 0, 65.7, 355],
@@ -50,19 +51,7 @@ var foodsSaturday = [
 ];
 
 class App extends Component {
-  state = {
-    // width: window.innerWidth,
-    width: 800,
-    height: 400
-  }
-
-  componentDidMount() {
-    // window.onresize = () => this.setState({ width: window.innerWidth })
-  }
-
   render() {
-    var { width, height } = this.state;
-
     return (
       <Importer>
         {transactions =>
@@ -70,18 +59,28 @@ class App extends Component {
             <DailyNutritionPlan foods={foods} />
             <DailyNutritionPlan foods={foodsSaturday} />
 
-            {transactions.length > 0 && <Summary transactions={transactions} />}
-            {transactions.length > 0 && (
-              <TransactionRange transactions={transactions}>
-                {range => <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />}
-              </TransactionRange>
-            )}
-            {transactions.length > 0 && <MonthExpenditureChart transactions={transactions} width={width} height={height} />}
+            <AccountExpedinture transactions={transactions} />
+            <MonthExpenditureChart transactions={transactions} width={800} height={400} />
           </div>
         }
       </Importer>
     );
   }
+}
+
+function AccountExpedinture({ transactions }) {
+  if (transactions.length === 0) {
+    return null;
+  }
+
+  return (
+    <Card>
+      <Summary transactions={transactions} />
+      <TransactionRange transactions={transactions}>
+        {range => <AccountBalanceChart transactions={transactions} width={800} height={400} range={range} />}
+      </TransactionRange>
+    </Card>
+  );
 }
 
 class TransactionRange extends Component {
@@ -142,6 +141,10 @@ function Summary({ transactions }) {
 }
 
 function MonthExpenditureChart({ transactions, width, height }) {
+  if (transactions.length === 0) {
+    return null;
+  }
+
   var expenditureByMonth = new Map();
 
   transactions.forEach(transaction => {
@@ -166,22 +169,24 @@ function MonthExpenditureChart({ transactions, width, height }) {
     .rangeRound([height, 0]);
 
   return (
-    <svg width={width} height={height}>
-      {[...expenditureByMonth.keys()].map(month =>
-        <rect
-          key={month}
-          fill="#9FE9E4"
-          x={x(month)}
-          y={y(expenditureByMonth.get(month))}
-          width={x.bandwidth()}
-          height={height - y(expenditureByMonth.get(month))}
-        >
-          <title>{`${month} - ${expenditureByMonth.get(month)} UAN`}</title>
-        </rect>
-      )}
+    <Card>
+      <svg width={width} height={height}>
+        {[...expenditureByMonth.keys()].map(month =>
+          <rect
+            key={month}
+            fill="#9FE9E4"
+            x={x(month)}
+            y={y(expenditureByMonth.get(month))}
+            width={x.bandwidth()}
+            height={height - y(expenditureByMonth.get(month))}
+          >
+            <title>{`${month} - ${expenditureByMonth.get(month)} UAN`}</title>
+          </rect>
+        )}
 
-      <YAxis ticks={10} scale={y} width={width} />
-    </svg>
+        <YAxis ticks={10} scale={y} width={width} />
+      </svg>
+    </Card>
   )
 }
 
