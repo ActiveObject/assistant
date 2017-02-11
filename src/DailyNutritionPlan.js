@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import './DailyNutritionPlan.css';
 import Card from './Card';
+import EditableNumber from './EditableNumber';
 
 export default class DailyNutritionPlan extends Component {
   state = {
-    disabled: []
+    disabled: [],
+    amountChanges: {}
   }
 
   toggleIngredient = ingredient => {
@@ -21,9 +23,27 @@ export default class DailyNutritionPlan extends Component {
     });
   }
 
+  onChangeAmount = (food, val) => {
+    this.setState(state => ({
+      amountChanges: Object.assign({}, state.amountChanges, {
+        [name(food)]: val > 0 ? val : 0
+      })
+    }));
+  }
+
   render() {
     var { foods } = this.props;
-    var { disabled } = this.state;
+    var { disabled, amountChanges } = this.state;
+
+    foods = foods.map(food => {
+      var [name1, amount, ...nutrients] = food;
+
+      if (amountChanges.hasOwnProperty(name(food))) {
+        return [name1, amountChanges[name(food)], ...nutrients];
+      }
+
+      return food;
+    });
 
     var totalCalories = foods
       .filter(ingredient => !disabled.includes(ingredient[0]))
@@ -75,7 +95,7 @@ export default class DailyNutritionPlan extends Component {
               </tr>
             </thead>
             <tbody>
-              {foods.map((d, i) => <ProductRow value={d} key={i} onClick={this.toggleIngredient} disabled={disabled.includes(d[0])} />)}
+              {foods.map((d, i) => <ProductRow food={d} key={i} onClick={this.toggleIngredient} onChangeAmount={this.onChangeAmount} disabled={disabled.includes(d[0])} />)}
             </tbody>
           </table>
         </div>
@@ -130,21 +150,27 @@ function BMR({ weight, height, age }) {
   return 10 * weight + 6.25 * height - 5 * age + 5;
 }
 
-function ProductRow({ value, disabled, onClick }) {
+function ProductRow({ food, disabled, onClick, onChangeAmount }) {
   return (
     <tr className={disabled && 'disabled'}>
-      <td onClick={() => onClick(value)}>{value[0]}</td>
-      <td className="td-right">{value[1]}</td>
-      <td className="td-right">{toFixed(amount(value) * protein(value))}</td>
-      <td className="td-right">{toFixed(amount(value) * fat(value))}</td>
-      <td className="td-right">{toFixed(amount(value) * carbs(value))}</td>
-      <td className="td-right">{toFixed(amount(value) * kcal(value))}</td>
+      <td onClick={() => onClick(food)}>{food[0]}</td>
+      <td className="td-right">
+        <EditableNumber value={amount(food)} onChange={val => onChangeAmount(food, val)} />
+      </td>
+      <td className="td-right">{toFixed(amount(food) * protein(food))}</td>
+      <td className="td-right">{toFixed(amount(food) * fat(food))}</td>
+      <td className="td-right">{toFixed(amount(food) * carbs(food))}</td>
+      <td className="td-right">{toFixed(amount(food) * kcal(food))}</td>
     </tr>
   )
 }
 
 function toFixed(number, digits = 1) {
   return Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits);
+}
+
+function name(food) {
+  return food[0];
 }
 
 function amount(food) {
