@@ -64,10 +64,22 @@ class App extends Component {
     var { width, height } = this.state;
 
     return (
-      <div className="App">
-        <DailyNutritionPlan foods={foods} />
-        <DailyNutritionPlan foods={foodsSaturday} />
-      </div>
+      <Importer>
+        {transactions =>
+          <div className="App">
+            <DailyNutritionPlan foods={foods} />
+            <DailyNutritionPlan foods={foodsSaturday} />
+
+            {transactions.length > 0 && <Summary transactions={transactions} />}
+            {transactions.length > 0 && (
+              <TransactionRange transactions={transactions}>
+                {range => <AccountBalanceChart transactions={transactions} width={width} height={height} range={range} />}
+              </TransactionRange>
+            )}
+            {transactions.length > 0 && <MonthExpenditureChart transactions={transactions} width={width} height={height} />}
+          </div>
+        }
+      </Importer>
     );
   }
 }

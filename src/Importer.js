@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 export default class Importer extends Component {
   state = {
     waitingForData: true,
-    draggingOver: false
+    draggingOver: false,
+    transactions: []
   }
 
   onDragOver = (event) => {
@@ -32,7 +33,9 @@ export default class Importer extends Component {
 
     if (waitingForData) {
       return (
-        <div className={`drop-area ${draggingOver && 'dragging-over'}`} onDragOver={this.onDragOver} onDrop={this.onDrop}></div>
+        <div className={`drop-area ${draggingOver && 'dragging-over'}`} onDragOver={this.onDragOver} onDrop={this.onDrop}>
+          {this.props.children(transactions)}
+        </div>
       )
     }
 
