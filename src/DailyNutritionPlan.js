@@ -155,7 +155,7 @@ function ProductRow({ food, disabled, onClick, onChangeAmount }) {
     <tr className={disabled && 'disabled'}>
       <td onClick={() => onClick(food)}>{food[0]}</td>
       <td className="td-right">
-        <EditableNumber value={amount(food)} onChange={val => onChangeAmount(food, val)} />
+        <EditableNumber value={amount(food)} scaleFactor={0.3} onChange={val => onChangeAmount(food, val)} />
       </td>
       <td className="td-right">{toFixed(amount(food) * protein(food))}</td>
       <td className="td-right">{toFixed(amount(food) * fat(food))}</td>

@@ -30,7 +30,7 @@ export default class EditableNumber extends Component {
     event.preventDefault();
     var { scaleFactor = 1, min = Infinity, onChange } = this.props;
     var { checkpoint } = this.state;
-    var delta = Math.floor(event.clientX - this.state.anchorX) * scaleFactor;
+    var delta = Math.floor((event.clientX - this.state.anchorX) * scaleFactor);
     onChange(checkpoint + delta);
   }
 
