@@ -3,7 +3,25 @@ import './DailyNutritionPlan.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
 
-export default class DailyNutritionPlan extends Component {
+export function WeeklyNutritionPlan({ foods }) {
+  var totalFoods = new Map();
+
+  foods.forEach(dailyPlan => {
+    dailyPlan.forEach(food => {
+      var key = name(food);
+
+      if (!totalFoods.has(key)) {
+        return totalFoods.set(key, food);
+      }
+
+      totalFoods.get(key)[1] += amount(food);
+    });
+  });
+
+  return <DailyNutritionPlan foods={[...totalFoods.values()]} />
+}
+
+export class DailyNutritionPlan extends Component {
   state = {
     disabled: [],
     amountChanges: {}
