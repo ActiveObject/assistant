@@ -28,7 +28,7 @@ export default class EditableNumber extends Component {
 
   onMouseMove = (event) => {
     event.preventDefault();
-    var { scaleFactor = 1, min = Infinity, onChange } = this.props;
+    var { scaleFactor = 1, onChange } = this.props;
     var { checkpoint } = this.state;
     var delta = Math.floor((event.clientX - this.state.anchorX) * scaleFactor);
     onChange(checkpoint + delta);

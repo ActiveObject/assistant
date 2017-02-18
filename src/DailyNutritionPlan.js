@@ -3,22 +3,22 @@ import './DailyNutritionPlan.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
 
-export function WeeklyNutritionPlan({ foods }) {
+export function WeeklyNutritionPlan({ foods, db }) {
   var totalFoods = new Map();
 
   foods.forEach(dailyPlan => {
     dailyPlan.forEach(food => {
-      var key = name(food);
+      var [name, amount] = food;
 
-      if (!totalFoods.has(key)) {
-        return totalFoods.set(key, food);
+      if (!totalFoods.has(name)) {
+        return totalFoods.set(name, food);
       }
 
-      totalFoods.get(key)[1] += amount(food);
+      totalFoods.get(name)[1] += amount;
     });
   });
 
-  return <DailyNutritionPlan foods={[...totalFoods.values()]} />
+  return <DailyNutritionPlan foods={[...totalFoods.values()]} db={db} />
 }
 
 export class DailyNutritionPlan extends Component {
@@ -31,7 +31,7 @@ export class DailyNutritionPlan extends Component {
     this.setState(state => {
       if (state.disabled.includes(ingredient[0])) {
         return {
-          disabled: state.disabled.filter(name => name != ingredient[0])
+          disabled: state.disabled.filter(name => name !== ingredient[0])
         };
       } else {
         return {
@@ -41,46 +41,50 @@ export class DailyNutritionPlan extends Component {
     });
   }
 
-  onChangeAmount = (food, val) => {
+  onChangeAmount = ([name], val) => {
     this.setState(state => ({
       amountChanges: Object.assign({}, state.amountChanges, {
-        [name(food)]: val > 0 ? val : 0
+        [name]: val > 0 ? val : 0
       })
     }));
   }
 
   render() {
-    var { foods } = this.props;
+    var { foods, db } = this.props;
     var { disabled, amountChanges } = this.state;
 
     foods = foods.map(food => {
-      var [name1, amount, ...nutrients] = food;
+      var [name] = food;
 
-      if (amountChanges.hasOwnProperty(name(food))) {
-        return [name1, amountChanges[name(food)], ...nutrients];
+      if (!db.hasOwnProperty(name)) {
+        throw new Error(`Can find nutrients for ${name}`);
+      }
+
+      if (amountChanges.hasOwnProperty(name)) {
+        return [name, amountChanges[name]];
       }
 
       return food;
     });
 
     var totalCalories = foods
-      .filter(ingredient => !disabled.includes(ingredient[0]))
-      .map(ingredient => amount(ingredient) * kcal(ingredient))
+      .filter(([name]) => !disabled.includes(name))
+      .map(([name, amount]) => amount * kcal(db[name]))
       .reduce((a, b) => a + b, 0)
 
     var totalProtein = foods
-      .filter(ingredient => !disabled.includes(ingredient[0]))
-      .map(ingredient => amount(ingredient) * protein(ingredient))
+      .filter(([name]) => !disabled.includes(name))
+      .map(([name, amount]) => amount * protein(db[name]))
       .reduce((a, b) => a + b, 0);
 
     var totalFat = foods
-      .filter(ingredient => !disabled.includes(ingredient[0]))
-      .map(ingredient => amount(ingredient) * fat(ingredient))
+      .filter(([name]) => !disabled.includes(name))
+      .map(([name, amount]) => amount * fat(db[name]))
       .reduce((a, b) => a + b, 0);
 
     var totalCarbs = foods
-      .filter(ingredient => !disabled.includes(ingredient[0]))
-      .map(ingredient => amount(ingredient) * carbs(ingredient))
+      .filter(([name]) => !disabled.includes(name))
+      .map(([name, amount]) => amount * carbs(db[name]))
       .reduce((a, b) => a + b, 0);
 
     return (
@@ -113,7 +117,7 @@ export class DailyNutritionPlan extends Component {
               </tr>
             </thead>
             <tbody>
-              {foods.map((d, i) => <ProductRow food={d} key={i} onClick={this.toggleIngredient} onChangeAmount={this.onChangeAmount} disabled={disabled.includes(d[0])} />)}
+              {foods.map((d, i) => <ProductRow food={d} db={db} key={i} onClick={this.toggleIngredient} onChangeAmount={this.onChangeAmount} disabled={disabled.includes(d[0])} />)}
             </tbody>
           </table>
         </div>
@@ -122,63 +126,19 @@ export class DailyNutritionPlan extends Component {
   }
 }
 
-function TDEETable({ bmr }) {
-  return (
-    <table style={{ backgroundColor: "white" }}>
-      <thead>
-        <tr>
-          <th>Amount of exercise</th>
-          <th>Description</th>
-          <th className="td-right">TDEE, kcal</th>
-        </tr>
-      </thead>
+function ProductRow({ food, db, disabled, onClick, onChangeAmount }) {
+  var [name, amount] = food;
 
-      <tbody>
-        <tr>
-          <td>Sedentary</td>
-          <td>Little or no Exercise</td>
-          <td className="td-right">{toFixed(bmr * 1.2)}</td>
-        </tr>
-        <tr>
-          <td>Lightly active</td>
-          <td>Light exercise/sports 1-3 days/week</td>
-          <td className="td-right">{toFixed(bmr * 1.375)}</td>
-        </tr>
-        <tr>
-          <td>Moderately active</td>
-          <td>Moderate exercise/sports 3-5 days/week</td>
-          <td className="td-right">{toFixed(bmr * 1.55)}</td>
-        </tr>
-        <tr>
-          <td>Very active</td>
-          <td>Heavy exercise/sports 6-7 days/week</td>
-          <td className="td-right">{toFixed(bmr * 1.725)}</td>
-        </tr>
-        <tr>
-          <td>Extremely active</td>
-          <td>Very heavy exercise/physical job/training twice a day</td>
-          <td className="td-right">{toFixed(bmr * 1.9)}</td>
-        </tr>
-      </tbody>
-    </table>
-  )
-}
-
-function BMR({ weight, height, age }) {
-  return 10 * weight + 6.25 * height - 5 * age + 5;
-}
-
-function ProductRow({ food, disabled, onClick, onChangeAmount }) {
   return (
     <tr className={disabled && 'disabled'}>
-      <td onClick={() => onClick(food)}>{food[0]}</td>
+      <td onClick={() => onClick(food)}>{name}</td>
       <td className="td-right">
-        <EditableNumber value={amount(food)} scaleFactor={0.3} onChange={val => onChangeAmount(food, val)} />
+        <EditableNumber value={amount} scaleFactor={0.3} onChange={val => onChangeAmount(food, val)} />
       </td>
-      <td className="td-right">{toFixed(amount(food) * protein(food))}</td>
-      <td className="td-right">{toFixed(amount(food) * fat(food))}</td>
-      <td className="td-right">{toFixed(amount(food) * carbs(food))}</td>
-      <td className="td-right">{toFixed(amount(food) * kcal(food))}</td>
+      <td className="td-right">{toFixed(amount * protein(db[name]))}</td>
+      <td className="td-right">{toFixed(amount * fat(db[name]))}</td>
+      <td className="td-right">{toFixed(amount * carbs(db[name]))}</td>
+      <td className="td-right">{toFixed(amount * kcal(db[name]))}</td>
     </tr>
   )
 }
@@ -187,26 +147,18 @@ function toFixed(number, digits = 1) {
   return Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits);
 }
 
-function name(food) {
-  return food[0];
-}
-
-function amount(food) {
-  return food[1];
-}
-
 function protein(food) {
-  return food[2] / 100;
+  return food[0] / 100;
 }
 
 function fat(food) {
-  return food[3] / 100;
+  return food[1] / 100;
 }
 
 function carbs(food) {
-  return food[4] / 100;
+  return food[2] / 100;
 }
 
 function kcal(food) {
-  return food[5] / 100;
+  return food[3] / 100;
 }
