@@ -148,17 +148,17 @@ function toFixed(number, digits = 1) {
 }
 
 function protein(food) {
-  return food[0] / 100;
+  return food[0];
 }
 
 function fat(food) {
-  return food[1] / 100;
+  return food[1];
 }
 
 function carbs(food) {
-  return food[2] / 100;
+  return food[2];
 }
 
 function kcal(food) {
-  return food[3] / 100;
+  return food[3];
 }
