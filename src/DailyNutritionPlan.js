@@ -11,7 +11,7 @@ export function WeeklyNutritionPlan({ foods, db }) {
       var [name, amount] = food;
 
       if (!totalFoods.has(name)) {
-        return totalFoods.set(name, food);
+        return totalFoods.set(name, [name, amount]);
       }
 
       totalFoods.get(name)[1] += amount;
