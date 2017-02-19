@@ -7,7 +7,7 @@ import { format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 import MotionPath from './MotionPath';
 import Importer from './Importer';
-import { DailyNutritionPlan, WeeklyNutritionPlan } from './DailyNutritionPlan';
+import { DailyNutritionPlan, WeeklyNutritionPlan, toFixed } from './DailyNutritionPlan';
 import Card from './Card';
 
 var db = {
@@ -133,6 +133,7 @@ class App extends Component {
             <DailyNutritionPlan foods={sat} db={db} />
             <DailyNutritionPlan foods={sun} db={db} />
             <WeeklyNutritionPlan foods={[mon, tue, wed, thu, fri, sat, sun]} db={db} />
+            <TDEETable bmr={BMR({ weight: 78, height: 182, age: 25})} />
 
             <AccountExpedinture transactions={transactions} />
             <MonthExpenditureChart transactions={transactions} width={800} height={400} />
@@ -141,6 +142,59 @@ class App extends Component {
       </Importer>
     );
   }
+}
+
+function TDEETable({ bmr }) {
+  return (
+    <Card style={{ padding: 10}}>
+      <table style={{ backgroundColor: "white" }}>
+        <thead>
+          <tr>
+            <th>Amount of exercise</th>
+            <th>Description</th>
+            <th className="td-right">TDEE, kcal</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>BMR</td>
+            <td></td>
+            <td className="td-right">{toFixed(bmr)}</td>
+          </tr>
+          <tr>
+            <td>Sedentary</td>
+            <td>Little or no Exercise</td>
+            <td className="td-right">{toFixed(bmr * 1.2)}</td>
+          </tr>
+          <tr>
+            <td>Lightly active</td>
+            <td>Light exercise/sports 1-3 days/week</td>
+            <td className="td-right">{toFixed(bmr * 1.375)}</td>
+          </tr>
+          <tr>
+            <td>Moderately active</td>
+            <td>Moderate exercise/sports 3-5 days/week</td>
+            <td className="td-right">{toFixed(bmr * 1.55)}</td>
+          </tr>
+          <tr>
+            <td>Very active</td>
+            <td>Heavy exercise/sports 6-7 days/week</td>
+            <td className="td-right">{toFixed(bmr * 1.725)}</td>
+          </tr>
+          <tr>
+            <td>Extremely active</td>
+            <td>Very heavy exercise/physical job/training twice a day</td>
+            <td className="td-right">{toFixed(bmr * 1.9)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </Card>
+  )
+}
+
+function BMR({ weight, height, age }) {
+  return 10 * weight + 6.25 * height - 5 * age + 5;
 }
 
 function AccountExpedinture({ transactions }) {

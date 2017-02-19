@@ -143,7 +143,7 @@ function ProductRow({ food, db, disabled, onClick, onChangeAmount }) {
   )
 }
 
-function toFixed(number, digits = 1) {
+export function toFixed(number, digits = 1) {
   return Math.round(number * Math.pow(10, digits)) / Math.pow(10, digits);
 }
 
