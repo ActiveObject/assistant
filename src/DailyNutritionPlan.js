@@ -131,6 +131,8 @@ function NutritionRatioChart({ radius, foods, db }) {
     .map(([name, amount]) => amount * carbs(db[name]))
     .reduce((a, b) => a + b, 0);
 
+  var total = totalProtein + totalCarbs + totalFat;
+
   var size = radius * 2;
 
   var a = arc()
@@ -139,8 +141,8 @@ function NutritionRatioChart({ radius, foods, db }) {
     .padAngle(Math.PI / 135);
 
   var outerArc = arc()
-    .innerRadius(radius * 1.4)
-    .outerRadius(radius * 1.4);
+    .innerRadius(radius * 1.5)
+    .outerRadius(radius * 1.5);
 
   return (
     <NutritionPie totalProtein={totalProtein} totalFat={totalFat} totalCarbs={totalCarbs}>
@@ -166,10 +168,11 @@ function NutritionRatioChart({ radius, foods, db }) {
                       value={d.data.value}
                       x={outerArc.centroid(d)[0]}
                       y={outerArc.centroid(d)[1]}
-                      textAnchor='middle'
                       dy={annotationOffset(d)}
+                      textAnchor='middle'
+                      fontSize="0.9rem"
                       alignmentBaseline='central'>
-                      {`${toFixed(d.data.value, 0)}г (${toFixed(d.data.value / 77, 1)})`}
+                      {`${toFixed(d.data.value, 0)}г / ${toFixed(d.data.value / total * 100, 0)}% / ${toFixed(d.data.value / 77, 1)}`}
                     </text>
                   </g>
                 )
@@ -183,7 +186,7 @@ function NutritionRatioChart({ radius, foods, db }) {
 }
 
 function annotationOffset(d) {
-  return Math.sin((d.startAngle + d.endAngle) / 2 + Math.PI * 0.5) * 20;
+  return Math.sin((d.startAngle + d.endAngle) / 2 + Math.PI * 0.5) * 35;
 }
 
 function NutritionPie({ totalProtein, totalFat, totalCarbs, children }) {
