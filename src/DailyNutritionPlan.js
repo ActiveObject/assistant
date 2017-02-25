@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Motion, spring } from 'react-motion';
+import { Motion, spring, presets } from 'react-motion';
 import './DailyNutritionPlan.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
@@ -147,10 +147,14 @@ function NutritionRatioChart({ radius, foods, db }) {
       {p =>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
           <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-            <text x="50%" y="50%" dx="10">
-              <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(totalCalories, 0)}</tspan>
-              <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
-            </text>
+            <Motion style={{ value: spring(totalCalories, { stiffness: 210, damping: 20, precision: 0.01 }) }}>
+              {({ value }) =>
+                <text x="50%" y="50%" dx="10">
+                  <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(value, 0)}</tspan>
+                  <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
+                </text>
+              }
+            </Motion>
 
             <g transform={`translate(${radius}, ${radius})`}>
               {
