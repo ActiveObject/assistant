@@ -135,13 +135,13 @@ function NutritionRatioChart({ radius, foods, db, weight }) {
     .map(([name, amount]) => amount * carbs(db[name]))
     .reduce((a, b) => a + b, 0);
 
-  var total = totalProtein + totalCarbs + totalFat;
+  var total = totalProtein * 4 + totalCarbs * 4 + totalFat * 9;
 
   var size = radius * 2;
 
   var a = arc()
     .outerRadius(radius)
-    .innerRadius(radius - 3)
+    .innerRadius(radius - 4)
     .padAngle(Math.PI / 135);
 
   var outerArc = arc()
@@ -176,7 +176,7 @@ function NutritionRatioChart({ radius, foods, db, weight }) {
                       textAnchor='middle'
                       fontSize="0.9rem"
                       alignmentBaseline='central'>
-                      {`${toFixed(d.data.value, 0)}г / ${toFixed(d.data.value / total * 100, 0)}% / ${toFixed(d.data.value / weight, 1)}`}
+                      {`${toFixed(d.data.value, 0)}г / ${toFixed(d.data.calories / total * 100, 0)}% / ${toFixed(d.data.value / weight, 1)}`}
                     </text>
                   </g>
                 )
@@ -197,16 +197,19 @@ function NutritionPie({ totalProtein, totalFat, totalCarbs, children }) {
   return (
     <Motion style={{ p: spring(totalProtein), f: spring(totalFat), c: spring(totalCarbs) }}>
       {({ p, f, c }) => {
-        var nutritionPie = pie().sort(null).value(d => d.value)([{
+        var nutritionPie = pie().sort(null).value(d => d.calories)([{
           value: p,
+          calories: p * 4,
           color: '#59BBA2',
           textColor: '#1F8F73'
         }, {
           value: f,
+          calories: f * 9,
           color: '#F3748B',
           textColor: '#CE2C49'
         }, {
           value: c,
+          calories: c * 4,
           color: '#FFAB79',
           textColor: '#DC6F2F'
         }]);
