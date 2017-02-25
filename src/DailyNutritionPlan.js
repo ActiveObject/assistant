@@ -68,82 +68,11 @@ export class DailyNutritionPlan extends Component {
       return food;
     });
 
-    var totalCalories = foods
-      .filter(([name]) => !disabled.includes(name))
-      .map(([name, amount]) => amount * kcal(db[name]))
-      .reduce((a, b) => a + b, 0)
-
-    var totalProtein = foods
-      .filter(([name]) => !disabled.includes(name))
-      .map(([name, amount]) => amount * protein(db[name]))
-      .reduce((a, b) => a + b, 0);
-
-    var totalFat = foods
-      .filter(([name]) => !disabled.includes(name))
-      .map(([name, amount]) => amount * fat(db[name]))
-      .reduce((a, b) => a + b, 0);
-
-    var totalCarbs = foods
-      .filter(([name]) => !disabled.includes(name))
-      .map(([name, amount]) => amount * carbs(db[name]))
-      .reduce((a, b) => a + b, 0);
-
-    var radius = 120;
-    var size = radius * 2;
-
-    var a = arc()
-      .outerRadius(radius)
-      .innerRadius(radius - 3)
-      .padAngle(Math.PI / 135);
-
-    var outerArc = arc()
-      .innerRadius(radius * 1.2)
-      .outerRadius(radius * 1.2);
-
-    var p = pie().sort(null).value(d => d.value)([{
-      value: totalProtein,
-      color: '#59BBA2',
-      textColor: '#1F8F73'
-    }, {
-      value: totalFat,
-      color: '#F3748B',
-      textColor: '#CE2C49'
-    }, {
-      value: totalCarbs,
-      color: '#FFAB79',
-      textColor: '#DC6F2F'
-    }]);
-
     return (
       <Card>
         <div className='DailyNutritionPlan'>
           <header>
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
-              <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-                <text x="50%" y="50%" dx="10">
-                  <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(totalCalories, 0)}</tspan>
-                  <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
-                </text>
-
-                <g transform={`translate(${radius}, ${radius})`}>
-                    {
-                      p.map(d =>
-                        <g>
-                          <path d={a(d)} fill={d.data.color} />
-                          <text
-                            fill={d.data.textColor || d.data.color}
-                            value={d.data.value}
-                            x={outerArc.centroid(d)[0]}
-                            y={outerArc.centroid(d)[1]}
-                            alignmentBaseline="central">
-                            {toFixed(d.data.value, 0)}
-                          </text>
-                        </g>
-                      )
-                    }
-                  </g>
-              </g>
-            </svg>
+            <NutritionRatioChart radius={120} foods={foods.filter(([name]) => !disabled.includes(name))} db={db} />
           </header>
 
           <table>
@@ -181,6 +110,78 @@ function ProductRow({ food, db, disabled, onClick, onChangeAmount }) {
       <td className="td-right">{toFixed(amount * carbs(db[name]))}</td>
       <td className="td-right">{toFixed(amount * kcal(db[name]))}</td>
     </tr>
+  )
+}
+
+function NutritionRatioChart({ radius, foods, db }) {
+  var totalCalories = foods
+    .map(([name, amount]) => amount * kcal(db[name]))
+    .reduce((a, b) => a + b, 0)
+
+  var totalProtein = foods
+    .map(([name, amount]) => amount * protein(db[name]))
+    .reduce((a, b) => a + b, 0);
+
+  var totalFat = foods
+    .map(([name, amount]) => amount * fat(db[name]))
+    .reduce((a, b) => a + b, 0);
+
+  var totalCarbs = foods
+    .map(([name, amount]) => amount * carbs(db[name]))
+    .reduce((a, b) => a + b, 0);
+
+  var size = radius * 2;
+
+  var a = arc()
+    .outerRadius(radius)
+    .innerRadius(radius - 3)
+    .padAngle(Math.PI / 135);
+
+  var outerArc = arc()
+    .innerRadius(radius * 1.2)
+    .outerRadius(radius * 1.2);
+
+  var p = pie().sort(null).value(d => d.value)([{
+    value: totalProtein,
+    color: '#59BBA2',
+    textColor: '#1F8F73'
+  }, {
+    value: totalFat,
+    color: '#F3748B',
+    textColor: '#CE2C49'
+  }, {
+    value: totalCarbs,
+    color: '#FFAB79',
+    textColor: '#DC6F2F'
+  }]);
+
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
+      <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
+        <text x="50%" y="50%" dx="10">
+          <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(totalCalories, 0)}</tspan>
+          <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
+        </text>
+
+        <g transform={`translate(${radius}, ${radius})`}>
+            {
+              p.map(d =>
+                <g>
+                  <path d={a(d)} fill={d.data.color} />
+                  <text
+                    fill={d.data.textColor || d.data.color}
+                    value={d.data.value}
+                    x={outerArc.centroid(d)[0]}
+                    y={outerArc.centroid(d)[1]}
+                    alignmentBaseline="central">
+                    {toFixed(d.data.value, 0)}
+                  </text>
+                </g>
+              )
+            }
+          </g>
+      </g>
+    </svg>
   )
 }
 
