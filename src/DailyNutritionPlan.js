@@ -73,7 +73,11 @@ export class DailyNutritionPlan extends Component {
       <Card>
         <div className='DailyNutritionPlan'>
           <header>
-            <NutritionRatioChart radius={120} foods={foods.filter(([name]) => !disabled.includes(name))} db={db} />
+            <NutritionRatioChart
+              radius={120}
+              foods={foods.filter(([name]) => !disabled.includes(name))}
+              db={db}
+              weight={77} />
           </header>
 
           <table>
@@ -114,7 +118,7 @@ function ProductRow({ food, db, disabled, onClick, onChangeAmount }) {
   )
 }
 
-function NutritionRatioChart({ radius, foods, db }) {
+function NutritionRatioChart({ radius, foods, db, weight }) {
   var totalCalories = foods
     .map(([name, amount]) => amount * kcal(db[name]))
     .reduce((a, b) => a + b, 0)
@@ -172,7 +176,7 @@ function NutritionRatioChart({ radius, foods, db }) {
                       textAnchor='middle'
                       fontSize="0.9rem"
                       alignmentBaseline='central'>
-                      {`${toFixed(d.data.value, 0)}г / ${toFixed(d.data.value / total * 100, 0)}% / ${toFixed(d.data.value / 77, 1)}`}
+                      {`${toFixed(d.data.value, 0)}г / ${toFixed(d.data.value / total * 100, 0)}% / ${toFixed(d.data.value / weight, 1)}`}
                     </text>
                   </g>
                 )
