@@ -88,44 +88,62 @@ export class DailyNutritionPlan extends Component {
       .map(([name, amount]) => amount * carbs(db[name]))
       .reduce((a, b) => a + b, 0);
 
-    var radius = 100;
+    var radius = 120;
     var size = radius * 2;
+
     var a = arc()
       .outerRadius(radius)
-      .innerRadius(radius - 10)
-      .padAngle(Math.PI / 100)
+      .innerRadius(radius - 3)
+      .padAngle(Math.PI / 135);
+
+    var outerArc = arc()
+      .innerRadius(radius * 1.2)
+      .outerRadius(radius * 1.2);
 
     var p = pie().sort(null).value(d => d.value)([{
       value: totalProtein,
-      color: '#5A5D9C'
+      color: '#59BBA2',
+      textColor: '#1F8F73'
     }, {
       value: totalFat,
-      color: '#5A5D9C'
+      color: '#F3748B',
+      textColor: '#CE2C49'
     }, {
       value: totalCarbs,
-      color: '#5A5D9C'
+      color: '#FFAB79',
+      textColor: '#DC6F2F'
     }]);
 
     return (
       <Card>
         <div className='DailyNutritionPlan'>
           <header>
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto' }}>
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
               <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-                <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
-                <text x="50%" y={`${radius + 20}`} alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
-              </g>
+                <text x="50%" y="50%" dx="10">
+                  <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(totalCalories, 0)}</tspan>
+                  <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
+                </text>
 
-              <g transform={`translate(${radius}, ${radius})`}>
-                {p.map(d => <path d={a(d)} fill={d.data.color} />)}
+                <g transform={`translate(${radius}, ${radius})`}>
+                    {
+                      p.map(d =>
+                        <g>
+                          <path d={a(d)} fill={d.data.color} />
+                          <text
+                            fill={d.data.textColor || d.data.color}
+                            value={d.data.value}
+                            x={outerArc.centroid(d)[0]}
+                            y={outerArc.centroid(d)[1]}
+                            alignmentBaseline="central">
+                            {toFixed(d.data.value, 0)}
+                          </text>
+                        </g>
+                      )
+                    }
+                  </g>
               </g>
             </svg>
-
-            <div className="nutrients">
-              <span>{toFixed(totalProtein)}</span>
-              <span>{toFixed(totalFat)}</span>
-              <span>{toFixed(totalCarbs)}</span>
-            </div>
           </header>
 
           <table>
