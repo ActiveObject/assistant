@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './DailyNutritionPlan.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
+import { arc, pie } from 'd3-shape';
 
 export function WeeklyNutritionPlan({ foods, db }) {
   var totalFoods = new Map();
@@ -87,15 +88,36 @@ export class DailyNutritionPlan extends Component {
       .map(([name, amount]) => amount * carbs(db[name]))
       .reduce((a, b) => a + b, 0);
 
+    var radius = 100;
+    var size = radius * 2;
+    var a = arc()
+      .outerRadius(radius)
+      .innerRadius(radius - 10)
+      .padAngle(Math.PI / 100)
+
+    var p = pie().sort(null).value(d => d.value)([{
+      value: totalProtein,
+      color: '#5A5D9C'
+    }, {
+      value: totalFat,
+      color: '#5A5D9C'
+    }, {
+      value: totalCarbs,
+      color: '#5A5D9C'
+    }]);
+
     return (
       <Card>
         <div className='DailyNutritionPlan'>
           <header>
-            <svg width="350" height="350" viewBox="0 0 350 350" style={{ display: 'block', margin: 'auto' }}>
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto' }}>
               <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-                <circle r="100" cx="50%" cy="50%" fill="none" stroke="#5A5D9C" strokeWidth="10" strokeDasharray="2, 1" />
                 <text x="50%" y="50%" alignmentBaseline="central" fontSize="2rem" fill="#FDF6E3">{toFixed(totalCalories, 0)}</text>
-                <text x="50%" y="225" alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
+                <text x="50%" y={`${radius + 20}`} alignmentBaseline="central" fontSize="0.8rem" fill="#C5C7F1">cal</text>
+              </g>
+
+              <g transform={`translate(${radius}, ${radius})`}>
+                {p.map(d => <path d={a(d)} fill={d.data.color} />)}
               </g>
             </svg>
 
@@ -105,12 +127,6 @@ export class DailyNutritionPlan extends Component {
               <span>{toFixed(totalCarbs)}</span>
             </div>
           </header>
-
-          <div style={{ display: 'flex', width: '100%', height: 5 }}>
-            <div style={{ backgroundColor: 'green', height: '100%', width: totalProtein / (totalProtein + totalFat + totalCarbs) * 100 + '%' }} />
-            <div style={{ backgroundColor: 'red', height: '100%', width: totalFat / (totalProtein + totalFat + totalCarbs) * 100 + '%' }} />
-            <div style={{ backgroundColor: 'yellow', height: '100%', width: totalCarbs / (totalProtein + totalFat + totalCarbs) * 100 + '%' }} />
-          </div>
 
           <table>
             <thead>
