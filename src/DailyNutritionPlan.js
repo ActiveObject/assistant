@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Motion, spring } from 'react-motion';
 import './DailyNutritionPlan.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
@@ -141,47 +142,61 @@ function NutritionRatioChart({ radius, foods, db }) {
     .innerRadius(radius * 1.2)
     .outerRadius(radius * 1.2);
 
-  var p = pie().sort(null).value(d => d.value)([{
-    value: totalProtein,
-    color: '#59BBA2',
-    textColor: '#1F8F73'
-  }, {
-    value: totalFat,
-    color: '#F3748B',
-    textColor: '#CE2C49'
-  }, {
-    value: totalCarbs,
-    color: '#FFAB79',
-    textColor: '#DC6F2F'
-  }]);
-
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
-      <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
-        <text x="50%" y="50%" dx="10">
-          <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(totalCalories, 0)}</tspan>
-          <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
-        </text>
+    <NutritionPie totalProtein={totalProtein} totalFat={totalFat} totalCarbs={totalCarbs}>
+      {p =>
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
+          <g textAnchor="middle" fontFamily="Roboto, sans-serif" fontWeight="100">
+            <text x="50%" y="50%" dx="10">
+              <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(totalCalories, 0)}</tspan>
+              <tspan dy="1rem" fontSize="0.8rem" fill="#777">kcal</tspan>
+            </text>
 
-        <g transform={`translate(${radius}, ${radius})`}>
-            {
-              p.map(d =>
-                <g>
-                  <path d={a(d)} fill={d.data.color} />
-                  <text
-                    fill={d.data.textColor || d.data.color}
-                    value={d.data.value}
-                    x={outerArc.centroid(d)[0]}
-                    y={outerArc.centroid(d)[1]}
-                    alignmentBaseline="central">
-                    {toFixed(d.data.value, 0)}
-                  </text>
-                </g>
-              )
-            }
+            <g transform={`translate(${radius}, ${radius})`}>
+              {
+                p.map(d =>
+                  <g>
+                    <path d={a(d)} fill={d.data.color} />
+                    <text
+                      fill={d.data.textColor || d.data.color}
+                      value={d.data.value}
+                      x={outerArc.centroid(d)[0]}
+                      y={outerArc.centroid(d)[1]}
+                      alignmentBaseline="central">
+                      {toFixed(d.data.value, 0)}
+                    </text>
+                  </g>
+                )
+              }
+            </g>
           </g>
-      </g>
-    </svg>
+        </svg>
+      }
+    </NutritionPie>
+  )
+}
+
+function NutritionPie({ totalProtein, totalFat, totalCarbs, children }) {
+  return (
+    <Motion style={{ p: spring(totalProtein), f: spring(totalFat), c: spring(totalCarbs) }}>
+      {({ p, f, c }) => {
+        var nutritionPie = pie().sort(null).value(d => d.value)([{
+          value: p,
+          color: '#59BBA2',
+          textColor: '#1F8F73'
+        }, {
+          value: f,
+          color: '#F3748B',
+          textColor: '#CE2C49'
+        }, {
+          value: c,
+          color: '#FFAB79',
+          textColor: '#DC6F2F'
+        }]);
+
+        return children(nutritionPie);
+      }}
+    </Motion>
   )
 }
 
