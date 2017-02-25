@@ -139,19 +139,19 @@ function NutritionRatioChart({ radius, foods, db }) {
     .padAngle(Math.PI / 135);
 
   var outerArc = arc()
-    .innerRadius(radius * 1.2)
-    .outerRadius(radius * 1.2);
+    .innerRadius(radius * 1.4)
+    .outerRadius(radius * 1.4);
 
   return (
     <NutritionPie totalProtein={totalProtein} totalFat={totalFat} totalCarbs={totalCarbs}>
       {p =>
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ display: 'block', margin: 'auto', overflow: 'visible' }}>
-          <g textAnchor="middle" fontFamily="Montserrat" fontWeight="100">
+          <g textAnchor="middle">
             <Motion style={{ value: spring(totalCalories, { stiffness: 210, damping: 20, precision: 0.01 }) }}>
               {({ value }) =>
                 <text x="50%" y="50%" dx="10">
                   <tspan alignmentBaseline="central" fontSize="3rem" fill="#555">{toFixed(value, 0)}</tspan>
-                  <tspan dy="1.2rem" fontSize="0.8rem" fill="#777">kcal</tspan>
+                  <tspan dy="1.15rem" fontSize="0.8rem" fill="#777">ккал</tspan>
                 </text>
               }
             </Motion>
@@ -166,8 +166,10 @@ function NutritionRatioChart({ radius, foods, db }) {
                       value={d.data.value}
                       x={outerArc.centroid(d)[0]}
                       y={outerArc.centroid(d)[1]}
-                      alignmentBaseline="central">
-                      {toFixed(d.data.value, 0)}
+                      textAnchor='middle'
+                      dy={annotationOffset(d)}
+                      alignmentBaseline='central'>
+                      {`${toFixed(d.data.value, 0)}г (${toFixed(d.data.value / 77, 1)})`}
                     </text>
                   </g>
                 )
@@ -178,6 +180,10 @@ function NutritionRatioChart({ radius, foods, db }) {
       }
     </NutritionPie>
   )
+}
+
+function annotationOffset(d) {
+  return Math.sin((d.startAngle + d.endAngle) / 2 + Math.PI * 0.5) * 20;
 }
 
 function NutritionPie({ totalProtein, totalFat, totalCarbs, children }) {
