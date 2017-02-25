@@ -77,7 +77,7 @@ export class DailyNutritionPlan extends Component {
               radius={120}
               foods={foods.filter(([name]) => !disabled.includes(name))}
               db={db}
-              weight={77} />
+              weight={80} />
           </header>
 
           <table>
