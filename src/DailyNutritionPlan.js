@@ -105,6 +105,13 @@ export class DailyNutritionPlan extends Component {
               <span>{toFixed(totalCarbs)}</span>
             </div>
           </header>
+
+          <div style={{ display: 'flex', width: '100%', height: 5 }}>
+            <div style={{ backgroundColor: 'green', height: '100%', width: totalProtein / (totalProtein + totalFat + totalCarbs) * 100 + '%' }} />
+            <div style={{ backgroundColor: 'red', height: '100%', width: totalFat / (totalProtein + totalFat + totalCarbs) * 100 + '%' }} />
+            <div style={{ backgroundColor: 'yellow', height: '100%', width: totalCarbs / (totalProtein + totalFat + totalCarbs) * 100 + '%' }} />
+          </div>
+
           <table>
             <thead>
               <tr>
