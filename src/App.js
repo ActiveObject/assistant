@@ -7,7 +7,7 @@ import { format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 import MotionPath from './MotionPath';
 import Importer from './Importer';
-import { DailyNutritionPlan, WeeklyNutritionPlan, toFixed } from './DailyNutritionPlan';
+import { DailyNutritionPlan, WeeklyNutritionPlan, toFixed } from './nutrition-plan';
 import Card from './Card';
 
 var db = {
@@ -128,6 +128,13 @@ var fri = thu;
 var sat = fri;
 var sun = sat;
 
+var cocktail = [
+  ['грейпфрутовий сік', 250],
+  ['малина заморожена', 150],
+  ['полуниця заморожена', 150],
+  ['протеїн', 2],
+];
+
 class App extends Component {
   render() {
     return (
@@ -141,6 +148,7 @@ class App extends Component {
             <DailyNutritionPlan foods={fri} db={db} />
             <DailyNutritionPlan foods={sat} db={db} />
             <DailyNutritionPlan foods={sun} db={db} />
+            <DailyNutritionPlan foods={cocktail} db={db} />
             <WeeklyNutritionPlan foods={[mon, tue, wed, thu, fri, sat, sun]} db={db} />
             <TDEETable bmr={BMR({ weight: 78, height: 182, age: 25})} />
 

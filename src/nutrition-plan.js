@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Motion, spring, presets } from 'react-motion';
-import './DailyNutritionPlan.css';
+import { Motion, spring } from 'react-motion';
+import './nutrition-plan.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
 import { arc, pie } from 'd3-shape';
@@ -164,8 +164,8 @@ function NutritionRatioChart({ radius, foods, db, weight }) {
 
             <g transform={`translate(${radius}, ${radius})`}>
               {
-                p.map(d =>
-                  <g>
+                p.map((d, i) =>
+                  <g key={i}>
                     <path d={a(d)} fill={d.data.color} />
                     <text
                       fill={d.data.textColor || d.data.color}
