@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import Importer from './Importer';
-import { DailyNutritionPlan, WeeklyNutritionPlan, toFixed } from './nutrition';
+import { DailyNutritionPlan, WeeklyNutritionPlan, TDEETable, bmr } from './nutrition';
 import { AccountExpedinture, MonthExpenditureChart } from './accountant';
-import Card from './Card';
 
 var db = {
   'вівсянка': [0, 0, 65.7, 355].map(x => x / 100),
@@ -130,83 +129,26 @@ var cocktail = [
   ['протеїн', 2],
 ];
 
-class App extends Component {
-  render() {
-    return (
-      <Importer>
-        {transactions =>
-          <div className="App">
-            <DailyNutritionPlan foods={mon} db={db} />
-            <DailyNutritionPlan foods={tue} db={db} />
-            <DailyNutritionPlan foods={wed} db={db} />
-            <DailyNutritionPlan foods={thu} db={db} />
-            <DailyNutritionPlan foods={fri} db={db} />
-            <DailyNutritionPlan foods={sat} db={db} />
-            <DailyNutritionPlan foods={sun} db={db} />
-            <DailyNutritionPlan foods={cocktail} db={db} />
-            <WeeklyNutritionPlan foods={[mon, tue, wed, thu, fri, sat, sun]} db={db} />
-            <TDEETable bmr={BMR({ weight: 78, height: 182, age: 25})} />
-
-            <AccountExpedinture transactions={transactions} />
-            <MonthExpenditureChart transactions={transactions} width={800} height={400} />
-          </div>
-        }
-      </Importer>
-    );
-  }
-}
-
-function TDEETable({ bmr }) {
+export default function App() {
   return (
-    <Card style={{ padding: 10}}>
-      <table style={{ backgroundColor: "white" }}>
-        <thead>
-          <tr>
-            <th>Amount of exercise</th>
-            <th>Description</th>
-            <th className="td-right">TDEE, kcal</th>
-          </tr>
-        </thead>
+    <Importer>
+      {transactions =>
+        <div className="App">
+          <DailyNutritionPlan foods={mon} db={db} />
+          <DailyNutritionPlan foods={tue} db={db} />
+          <DailyNutritionPlan foods={wed} db={db} />
+          <DailyNutritionPlan foods={thu} db={db} />
+          <DailyNutritionPlan foods={fri} db={db} />
+          <DailyNutritionPlan foods={sat} db={db} />
+          <DailyNutritionPlan foods={sun} db={db} />
+          <DailyNutritionPlan foods={cocktail} db={db} />
+          <WeeklyNutritionPlan foods={[mon, tue, wed, thu, fri, sat, sun]} db={db} />
+          <TDEETable bmr={bmr({ weight: 78, height: 182, age: 25})} />
 
-        <tbody>
-          <tr>
-            <td>BMR</td>
-            <td></td>
-            <td className="td-right">{toFixed(bmr)}</td>
-          </tr>
-          <tr>
-            <td>Sedentary</td>
-            <td>Little or no Exercise</td>
-            <td className="td-right">{toFixed(bmr * 1.2)}</td>
-          </tr>
-          <tr>
-            <td>Lightly active</td>
-            <td>Light exercise/sports 1-3 days/week</td>
-            <td className="td-right">{toFixed(bmr * 1.375)}</td>
-          </tr>
-          <tr>
-            <td>Moderately active</td>
-            <td>Moderate exercise/sports 3-5 days/week</td>
-            <td className="td-right">{toFixed(bmr * 1.55)}</td>
-          </tr>
-          <tr>
-            <td>Very active</td>
-            <td>Heavy exercise/sports 6-7 days/week</td>
-            <td className="td-right">{toFixed(bmr * 1.725)}</td>
-          </tr>
-          <tr>
-            <td>Extremely active</td>
-            <td>Very heavy exercise/physical job/training twice a day</td>
-            <td className="td-right">{toFixed(bmr * 1.9)}</td>
-          </tr>
-        </tbody>
-      </table>
-    </Card>
-  )
+          <AccountExpedinture transactions={transactions} />
+          <MonthExpenditureChart transactions={transactions} width={800} height={400} />
+        </div>
+      }
+    </Importer>
+  );
 }
-
-function BMR({ weight, height, age }) {
-  return 10 * weight + 6.25 * height - 5 * age + 5;
-}
-
-export default App;
