@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import Importer from './Importer';
-import { DailyNutritionPlan, WeeklyNutritionPlan, toFixed } from './nutrition-plan';
+import { DailyNutritionPlan, WeeklyNutritionPlan, toFixed } from './nutrition';
 import { AccountExpedinture, MonthExpenditureChart } from './accountant';
 import Card from './Card';
 

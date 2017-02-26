@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Motion, spring } from 'react-motion';
-import './nutrition-plan.css';
+import './nutrition.css';
 import Card from './Card';
 import EditableNumber from './EditableNumber';
 import { arc, pie } from 'd3-shape';
