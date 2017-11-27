@@ -1,8 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom';
 import './App.css';
 import Importer from './Importer';
-import { DailyNutritionPlan, WeeklyNutritionPlan, TDEETable, bmr } from './nutrition';
+import { DailyNutritionPlan, WeeklyNutritionPlan, TDEETable } from './nutrition';
 import { AccountExpedinture, MonthExpenditureChart } from './accountant';
+import Gmail from './Gmail';
 
 var db = {
   'вівсянка': [0, 0, 65.7, 355].map(x => x / 100),
@@ -12,12 +18,14 @@ var db = {
   'яйця (білок)': [4, 0, 0, 16],
   'яйця (жовток)': [4, 4.5, 0, 52],
   'лосось': [20.5, 15.5, 0, 218].map(x => x / 100),
-  'молоко пряжене': [3, 4.7, 2.5, 53].map(x => x / 100),
+  'молоко пряжене': [3, 4.7, 1, 53].map(x => x / 100),
   'тунець шматочками "Премія"': [25.57, 0.56, 0, 140].map(x => x / 100),
   'індичка': [19, 0, 0, 80].map(x => x / 100),
   'сир нежирний "President"': [15, 0.2, 1.8, 69].map(x => x / 100),
+  'сир нежирний "Молокія"': [16, 0.2, 1.8, 69].map(x => x / 100),
 
   'фініки': [0, 0, 63.8, 285].map(x => x / 100),
+  'чорнослив': [2.2, 0.4, 64, 240].map(x => x / 100),
   'грейпфрутовий сік': [0, 0, 8, 39].map(x => x / 100),
   'йогурт грецький "extra 2%"': [6.7, 2, 4.9, 64].map(x => x / 100),
   'йогурт грецький премія "0%"': [8, 0, 5, 52].map(x => x / 100),
@@ -29,27 +37,57 @@ var db = {
   'малина заморожена': [0, 0, 10, 40].map(x => x / 100),
   'полуниця заморожена': [0, 0, 15, 60].map(x => x / 100),
   'протеїн': [24, 1, 4, 120],
+  'буряк варений': [1.4, 0.1, 8.7, 41].map(x => x / 100),
+  'окунь': [25, 1.2, 0, 117].map(x => x / 100),
+  'моцарелла Galbani Light': [18, 11, 1.6, 173].map(x => x / 100),
+  'ряжанка Яготинська': [3, 4, 3.5, 62].map(x => x / 100),
+  'банан': [1.3, 0, 27, 105]
 };
 
 var mon = [
-  ['вівсянка', 80],
-  ['фініки', 35],
-  ['молоко пряжене', 250],
-  ['грейпфрутовий сік', 250],
+  ['моцарелла Galbani Light', 125],
 
-  ['яйця (білок)', 5],
-  ['яйця (жовток)', 3],
+  ['вівсянка', 110],
+  ['фініки', 30],
+  ['чорнослив', 30],
+  ['молоко пряжене', 300],
+  // ['грейпфрутовий сік', 250],
+
   ['гречка (Бест Альтернатива)', 80],
+  ['індичка', 200],
 
-  ['індичка', 250],
-  ['рис (Wild&Brown Rice)', 80],
-  ['маслини Iberica', 30],
+  ['яйця (білок)', 6],
+  ['яйця (жовток)', 3],
+  ['буряк варений', 200],
 
-  ['шоколад (Noir 72%)', 2],
+  // ['шоколад (Noir 72%)', 2],
+  ['горіхи грецькі', 30],
+  ['чорнослив', 30],
 
-  ['йогурт грецький премія "0%"', 150],
-  ['горіхи грецькі', 20],
-  ['варення чорна смородина', 20],
+  ['сир нежирний "Молокія"', 200],
+];
+
+var diet2 = [
+  ['моцарелла Galbani Light', 125],
+
+  ['вівсянка', 110],
+  ['фініки', 30],
+  ['чорнослив', 30],
+  ['молоко пряжене', 300],
+  // ['грейпфрутовий сік', 250],
+
+  ['гречка (Бест Альтернатива)', 80],
+  ['індичка', 200],
+
+  ['яйця (білок)', 6],
+  ['яйця (жовток)', 3],
+  ['буряк варений', 200],
+
+  // ['шоколад (Noir 72%)', 2],
+  ['горіхи грецькі', 30],
+  ['чорнослив', 30],
+
+  ['окунь', 200]
 ];
 
 var tue = [
@@ -131,24 +169,27 @@ var cocktail = [
 
 export default function App() {
   return (
-    <Importer>
-      {transactions =>
-        <div className="App">
-          <DailyNutritionPlan foods={mon} db={db} />
-          <DailyNutritionPlan foods={tue} db={db} />
-          <DailyNutritionPlan foods={wed} db={db} />
-          <DailyNutritionPlan foods={thu} db={db} />
-          <DailyNutritionPlan foods={fri} db={db} />
-          <DailyNutritionPlan foods={sat} db={db} />
-          <DailyNutritionPlan foods={sun} db={db} />
-          <DailyNutritionPlan foods={cocktail} db={db} />
-          <WeeklyNutritionPlan foods={[mon, tue, wed, thu, fri, sat, sun]} db={db} />
-          <TDEETable bmr={bmr({ weight: 78, height: 182, age: 25})} />
+    <Router>
+      <div className="App">
+        <Switch>
+          <Route exact path="/">
+            {() =>
+              [
+                <Gmail clientId="322956686243-2kqhdrh08v4kaqfah8mia5b96640jmsj.apps.googleusercontent.com" />,
+                <DailyNutritionPlan foods={mon} db={db} />,
+                <DailyNutritionPlan foods={diet2} db={db} />,
+                <TDEETable />,
+              ]
+            }
+          </Route>
 
-          <AccountExpedinture transactions={transactions} />
-          <MonthExpenditureChart transactions={transactions} width={800} height={400} />
-        </div>
-      }
-    </Importer>
+          <Route path="/accounts">
+            <Importer>
+              {transactions => <AccountExpedinture transactions={transactions} key='AccountExpedinture' />}
+            </Importer>
+          </Route>
+        </Switch>
+      </div>
+    </Router>
   );
 }

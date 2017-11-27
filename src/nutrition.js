@@ -77,7 +77,7 @@ export class DailyNutritionPlan extends Component {
               radius={120}
               foods={foods.filter(([name]) => !disabled.includes(name))}
               db={db}
-              weight={80} />
+              weight={78} />
           </header>
 
           <table>
@@ -220,53 +220,70 @@ function NutritionPie({ totalProtein, totalFat, totalCarbs, children }) {
   )
 }
 
-export function TDEETable({ bmr }) {
-  return (
-    <Card style={{ padding: 10}}>
-      <table style={{ backgroundColor: "white" }}>
-        <thead>
-          <tr>
-            <th>Amount of exercise</th>
-            <th>Description</th>
-            <th className="td-right">TDEE, kcal</th>
-          </tr>
-        </thead>
+export class TDEETable extends Component {
+  state = {
+    weight: 77,
+    height: 180,
+    age: 25
+  }
 
-        <tbody>
-          <tr>
-            <td>BMR</td>
-            <td></td>
-            <td className="td-right">{toFixed(bmr)}</td>
-          </tr>
-          <tr>
-            <td>Sedentary</td>
-            <td>Little or no Exercise</td>
-            <td className="td-right">{toFixed(bmr * 1.2)}</td>
-          </tr>
-          <tr>
-            <td>Lightly active</td>
-            <td>Light exercise/sports 1-3 days/week</td>
-            <td className="td-right">{toFixed(bmr * 1.375)}</td>
-          </tr>
-          <tr>
-            <td>Moderately active</td>
-            <td>Moderate exercise/sports 3-5 days/week</td>
-            <td className="td-right">{toFixed(bmr * 1.55)}</td>
-          </tr>
-          <tr>
-            <td>Very active</td>
-            <td>Heavy exercise/sports 6-7 days/week</td>
-            <td className="td-right">{toFixed(bmr * 1.725)}</td>
-          </tr>
-          <tr>
-            <td>Extremely active</td>
-            <td>Very heavy exercise/physical job/training twice a day</td>
-            <td className="td-right">{toFixed(bmr * 1.9)}</td>
-          </tr>
-        </tbody>
-      </table>
-    </Card>
-  )
+  render() {
+    const { weight, height, age } = this.state;
+    const bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+
+    return (
+      <Card style={{ padding: 10}}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <EditableNumber value={weight} scaleFactor={0.3} onChange={weight => this.setState({ weight })} />kg{' - '}
+          <EditableNumber value={height} scaleFactor={0.3} onChange={height => this.setState({ height })} />cm{' - '}
+          <EditableNumber value={age} scaleFactor={0.1} onChange={age => this.setState({ age })} />y
+        </div>
+        <table style={{ backgroundColor: "white" }}>
+          <thead>
+            <tr>
+              <th>Amount of exercise</th>
+              <th>Description</th>
+              <th className="td-right">TDEE, kcal</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>BMR</td>
+              <td></td>
+              <td className="td-right">{toFixed(bmr)}</td>
+            </tr>
+            <tr>
+              <td>Sedentary</td>
+              <td>Little or no Exercise</td>
+              <td className="td-right">{toFixed(bmr * 1.2)}</td>
+            </tr>
+            <tr>
+              <td>Lightly active</td>
+              <td>Light exercise/sports 1-3 days/week</td>
+              <td className="td-right">{toFixed(bmr * 1.375)}</td>
+            </tr>
+            <tr>
+              <td>Moderately active</td>
+              <td>Moderate exercise/sports 3-5 days/week</td>
+              <td className="td-right">{toFixed(bmr * 1.55)}</td>
+            </tr>
+            <tr>
+              <td>Very active</td>
+              <td>Heavy exercise/sports 6-7 days/week</td>
+              <td className="td-right">{toFixed(bmr * 1.725)}</td>
+            </tr>
+            <tr>
+              <td>Extremely active</td>
+              <td>Very heavy exercise/physical job/training twice a day</td>
+              <td className="td-right">{toFixed(bmr * 1.9)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </Card>
+    )
+  }
+
 }
 
 export function bmr({ weight, height, age }) {

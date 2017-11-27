@@ -54,6 +54,11 @@ function parseStar24Statement(htmlContent) {
   var transactions = rows.map(row => {
     var cells = row.querySelectorAll('td');
     var date = parseStar24Date(cells[0].textContent);
+
+    if (isNaN(date.valueOf())) {
+      date = parseStar24Date(cells[1].textContent);
+    }
+
     var description = cells[cells.length === 6 ? 2 : 3].textContent;
     var currency = cells[cells.length === 6 ? 3 : 4].textContent;
     var amount = parseStar24Number(cells[cells.length === 6 ? 4 : 5].textContent);

@@ -11,14 +11,15 @@ export default class EditableNumber extends Component {
   onMouseEnter = () => this.setState({ hovering: true })
   onMouseLeave = () => this.setState({ hovering: false })
   onMouseDown = (event) => {
-    var removeAllListeners = () => {
+    throw new Error('test');
+    this.removeAllListeners = () => {
       document.body.removeEventListener('mousemove', this.onMouseMove, false);
-      document.body.removeEventListener('mouseup', removeEventListener, false);
+      document.body.removeEventListener('mouseup', this.removeEventListener, false);
       this.setState({ changing: false });
     };
 
     document.body.addEventListener('mousemove', this.onMouseMove, false);
-    document.body.addEventListener('mouseup', removeAllListeners, false);
+    document.body.addEventListener('mouseup', this.removeAllListeners, false);
     this.setState({
       changing: true,
       anchorX: event.clientX,

@@ -16,7 +16,12 @@ export function AccountExpedinture({ transactions }) {
     <Card>
       <Summary transactions={transactions} />
       <TransactionRange transactions={transactions}>
-        {range => <AccountBalanceChart transactions={transactions} width={800} height={400} range={range} />}
+        {range =>
+          [
+            <AccountBalanceChart transactions={transactions} width={800} height={400} range={range} />,
+            <AccountExpedintureChart transactions={transactions} width={800} height={400} range={range} />,
+          ]
+        }
       </TransactionRange>
     </Card>
   );
@@ -130,7 +135,64 @@ function Summary({ transactions }) {
   )
 }
 
+function AccountExpedintureChart({ transactions, width, height, range }) {
+  var values = new Map();
+
+  transactions
+    .slice(range[0], range[1])
+    .filter(t => t.amount < 0)
+    .forEach(t => {
+      if (values.has(t.date.toString())) {
+        values.get(t.date.toString()).amount += (-t.amount);
+      } else {
+        values.set(t.date.toString(), {
+          amount: -t.amount,
+          date: t.date
+        });
+      }
+    });
+
+  values = [...values.values()];
+
+  var x = scaleTime()
+    .domain([values[0].date, values[values.length - 1].date])
+    .rangeRound([0, width]);
+
+  var y = scaleLinear()
+    .domain([0, Math.max(...values.map(d => d.amount))])
+    .rangeRound([height, height * 0.1]);
+
+  return (
+    <svg width={width} height={height}>
+      <g className="bars">
+        {values.map(d => <rect x={x(d.date)} y={y(d.amount)} width={6} height={height - y(d.amount)} fill="#71D1CA" />)}
+      </g>
+
+      <YAxis ticks={10} scale={y} width={width} />
+    </svg>
+  )
+}
+
 function AccountBalanceChart({ transactions, width, height, range }) {
+  debugger
+  var values = new Map();
+
+  transactions
+    .slice(range[0], range[1])
+    .filter(t => t.amount < 0)
+    .forEach(t => {
+      if (values.has(t.date.toString())) {
+        values.get(t.date.toString()).balance += t.balance;
+      } else {
+        values.set(t.date.toString(), {
+          amount: -t.amount,
+          date: t.date
+        });
+      }
+    });
+
+  values = [...values.values()];
+
   var x = scaleTime()
     .domain([transactions[range[0]].date, transactions[range[1]].date])
     .rangeRound([0, width]);
@@ -139,26 +201,11 @@ function AccountBalanceChart({ transactions, width, height, range }) {
     .domain([0, Math.max(...transactions.map(d => d.balance))])
     .rangeRound([height, height * 0.1]);
 
-  var createArea = area()
-    .curve(curveMonotoneX)
-    .x(d => x(d.date))
-    .y0(y(0))
-    .y1(d => y(d.balance))
-
-  var createLine = line()
-    .curve(curveMonotoneX)
-    .x(d => x(d.date))
-    .y(d => y(d.balance))
-
   return (
     <svg width={width} height={height}>
-      <MotionPath path={createArea(transactions)}>
-        {d => <path d={d} fill="#9FE9E4" />}
-			</MotionPath>
-
-      <MotionPath path={createLine(transactions)}>
-        {d => <path d={d} fill="none" stroke="#71D1CA" strokeWidth="3" strokeLinejoin="round" strokeLinecap="round" />}
-      </MotionPath>
+      <g className="bars">
+        {values.map(d => <rect x={x(d.date)} y={y(d.amount)} width={6} height={height - y(d.amount)} fill="#71D1CA" />)}
+      </g>
 
       <YAxis ticks={10} scale={y} width={width} />
     </svg>
