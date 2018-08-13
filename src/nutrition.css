@@ -69,15 +69,14 @@ tr.summary td {
 }
 
 .DailyNutritionPlan {
-  width: 100%;
-  max-width: 600px;
+  width: 500px;
 }
 
 .DailyNutritionPlan header {
   /*background-color: #6c71c4;*/
   width: 100%;
-  height: 350px;
   position: relative;
+  padding-top: 50px;
 }
 
 .DailyNutritionPlan table {

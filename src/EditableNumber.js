@@ -11,7 +11,6 @@ export default class EditableNumber extends Component {
   onMouseEnter = () => this.setState({ hovering: true })
   onMouseLeave = () => this.setState({ hovering: false })
   onMouseDown = (event) => {
-    throw new Error('test');
     this.removeAllListeners = () => {
       document.body.removeEventListener('mousemove', this.onMouseMove, false);
       document.body.removeEventListener('mouseup', this.removeEventListener, false);
