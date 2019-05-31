@@ -191,7 +191,6 @@ export default function App() {
         <Switch>
           <Route exact path="/">
             <>
-              <Gmail clientId="322956686243-2kqhdrh08v4kaqfah8mia5b96640jmsj.apps.googleusercontent.com" />
               <DailyNutritionPlan
                 foods={[
                   ["спагетті", 70],
